@@ -1,0 +1,135 @@
+{
+  "suppliers": [
+    {
+      "code": "1111",
+      "name": "Supplier 1",
+      "displayName": "Supplier1",
+      "taxNumber": "2242562525",
+      "taxOffice": "2242562525",
+      "description": "açıklama",
+      "faxNumber": "123456789",
+      "address": "Görükle",
+      "countryId": null,
+      "country": null,
+      "cityId": 2,
+      "city": {
+        "name": "İstanbul",
+        "country": {
+          "name": "Turkey",
+          "id": 1
+        },
+        "countryId": 1,
+        "id": 2
+      },
+      "supplierTypeId": 1,
+      "supplierType": {
+        "name": "ST 1",
+        "filledByUser": false,
+        "minValue": 2,
+        "maxValue": 10,
+        "id": 1
+      },
+      "supplierEmails": [],
+      "supplierPhones": [],
+      "id": 1
+    },
+    {
+      "code": "7",
+      "name": "7",
+      "displayName": "7",
+      "taxNumber": "7",
+      "taxOffice": "7",
+      "description": "7",
+      "faxNumber": "7",
+      "address": "7",
+      "countryId": null,
+      "country": null,
+      "cityId": 2,
+      "city": {
+        "name": "İstanbul",
+        "country": {
+          "name": "Turkey",
+          "id": 1
+        },
+        "countryId": 1,
+        "id": 2
+      },
+      "supplierTypeId": 4,
+      "supplierType": {
+        "name": "ST 3",
+        "filledByUser": true,
+        "minValue": 60,
+        "maxValue": 300,
+        "id": 4
+      },
+      "supplierEmails": [],
+      "supplierPhones": [],
+      "id": 5
+    }
+  ],
+  "countries": [
+    {
+      "name": "Turkey",
+      "id": 1
+    },
+    {
+      "name": "USA",
+      "id": 2
+    },
+    {
+      "name": "Rusya",
+      "id": 4
+    },
+    {
+      "name": "İtalya",
+      "id": 5
+    }
+  ],
+  "cities": [
+    {
+      "name": "Bursa",
+      "countryId": 1,
+      "country": {
+        "name": "Turkey",
+        "id": 1
+      },
+      "id": 1
+    },
+    {
+      "name": "İstanbul",
+      "countryId": 1,
+      "country": {
+        "name": "Turkey",
+        "id": 1
+      },
+      "id": 2
+    },
+    {
+      "name": "Ankara",
+      "countryId": 1,
+      "country": {
+        "name": "Turkey",
+        "id": 1
+      },
+      "id": 3
+    },
+    {
+      "name": "LA",
+      "countryId": 2,
+      "country": {
+        "name": "USA",
+        "id": 2
+      },
+      "id": 5
+    },
+    {
+      "name": "İtalya 1",
+      "countryId": 5,
+      "country": {
+        "name": "İtalya",
+        "id": 5
+      },
+      "id": 6
+    }
+  ]
+}
