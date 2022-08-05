@@ -4,6 +4,10 @@
   box-sizing: border-box;
 }
 
+html {
+  overflow-y: hidden;
+}
+
 body {
   font-family: 'Poppins', sans-serif;
 }
@@ -33,7 +37,7 @@ body {
 .Sidebar {
   display: flex;
   flex-direction: row;
-  height: 90vh;
+  height: 91vh;
   background-color: #fffcf8;
   color: black;
 }
@@ -46,16 +50,40 @@ body {
 }
 
 .Menu button {
-  width: 10vw;
+  width: 10vw !important;
 }
 
-.MuiPaper-root {
-  width: 10vw;
-  left: 8px !important;
+.Menu-container {
+  width: 11vw;
+}
+
+.Menu {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start !important;
 }
 
 .Menu-list {
-  margin-top: 0.75rem;
+  margin-left: -6px !important;
+  margin-top: 0.5rem !important;
+}
+
+.Menu-list-item {
+  height: 5vh !important;
+}
+
+.Menu-list-item:hover {
+  background-color: rgb(9 149 102) !important;
+  color: white !important;
+}
+
+.css-kk1bwy-MuiButtonBase-root-MuiMenuItem-root {
+  width: 10vw !important;
+  margin-top: 0.5rem !important;
+  display: flex !important;
+  justify-content: flex-start !important;
+  padding-left: 20% !important;
 }
 
 .no-data-text {
@@ -95,13 +123,14 @@ body {
 }
 
 .Insert-button {
-  font-size: 13px !important;
-  padding: 3px 0rem !important;
-  margin-right: 8px !important;
   display: inline-block !important;
   color: black !important;
   background-color: aquamarine !important;
-  width: 60% !important;
+  white-space: normal;
+  font-size: 13px !important;
+  padding: 3px 20px !important;
+  margin-right: 7px !important;
+  width: 8.9rem;
 }
 
 .css-sghohy-MuiButtonBase-root-MuiButton-root {
@@ -114,4 +143,38 @@ body {
 
 .css-1ixb7gp-MuiTableCell-root.MuiTableCell-body {
   width: 5% !important;
+}
+
+form {
+  margin-top: 10px;
+}
+
+form .MuiPaper-root {
+  width: 100% !important;
+}
+
+.Create-form {
+  padding: 20px 40px;
+  margin: 0px auto;
+  max-width: 600px;
+}
+
+.Supplier-create-form {
+  padding: 20px 40px;
+  margin: 0px auto;
+  max-width: 850px;
+}
+
+.Select-country {
+  left: 460px !important;
+}
+
+.show {
+  display: flex;
+  transition: all 0.3s ease-in-out;
+}
+
+.hide {
+  display: none;
+  transition: all 0.3s ease-in-out;
 }

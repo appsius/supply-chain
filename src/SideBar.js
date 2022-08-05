@@ -6,43 +6,40 @@ import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
 import SuppliersTable from './SuppliersTable';
 import CountriesTable from './CountriesTable';
 import CitiesTable from './CitiesTable';
-import fetchData from './helpers';
+import { getData } from './helpers';
 
 export default function SideBar() {
-  const suppliersURL = 'http://localhost:3000/suppliers';
-  const countriesURL = 'http://localhost:3000/countries';
-  const citiesURL = 'http://localhost:3000/cities';
-
+  const noDataText =
+    'Click from Dashboard to see Suppliers, Countries & Cities data';
+  const [loading, setLoading] = useState(false);
+  const suppliersGetURL =
+    'http://45.130.15.52:6501/api/services/app/Supplier/GetAll';
+  const countriesGetURL =
+    'http://45.130.15.52:6501/api/services/app/Country/GetAll';
+  const citiesGetURL = 'http://45.130.15.52:6501/api/services/app/City/GetAll';
   const [suppliers, setSuppliers] = useState([]);
   const [countries, setCountries] = useState([]);
   const [cities, setCities] = useState([]);
-  const [noDataText, setNoDataText] = useState(
-    'Click and choose from Dashboard to see the data of Suppliers, Countries & Cities'
-  );
-  const [renderedData, setRenderedData] = useState([]);
+  const [renderedData, setRenderedData] = useState('');
 
   useEffect(() => {
-    fetchData(suppliersURL, setSuppliers);
-    fetchData(countriesURL, setCountries);
-    fetchData(citiesURL, setCities);
+    getData(suppliersGetURL, setSuppliers);
+    getData(countriesGetURL, setCountries);
+    getData(citiesGetURL, setCities);
   }, []);
 
-  function handleSuppliersClick(popupState) {
-    setNoDataText('');
-    setRenderedData(suppliers);
+  function handleClick(dataUrl, setData, popupState, renderedData) {
     popupState.close();
-  }
+    setLoading(true);
+    getData(dataUrl, setData);
 
-  function handleCountriesClick(popupState) {
-    setNoDataText('');
-    setRenderedData(countries);
-    popupState.close();
-  }
-
-  function handleCitiesClick(popupState) {
-    setNoDataText('');
-    setRenderedData(cities);
-    popupState.close();
+    if (renderedData === 'suppliers-rendered') {
+      setRenderedData('suppliers-rendered');
+    } else if (renderedData === 'countries-rendered') {
+      setRenderedData('countries-rendered');
+    } else if (renderedData === 'cities-rendered') {
+      setRenderedData('cities-rendered');
+    }
   }
 
   return (
@@ -56,13 +53,43 @@ export default function SideBar() {
                   Dashboard
                 </Button>
                 <Menu {...bindMenu(popupState)} className='Menu-list'>
-                  <MenuItem onClick={() => handleSuppliersClick(popupState)}>
+                  <MenuItem
+                    className='Menu-list-item'
+                    onClick={() =>
+                      handleClick(
+                        suppliersGetURL,
+                        setSuppliers,
+                        popupState,
+                        'suppliers-rendered'
+                      )
+                    }
+                  >
                     Suppliers
                   </MenuItem>
-                  <MenuItem onClick={() => handleCountriesClick(popupState)}>
+                  <MenuItem
+                    className='Menu-list-item'
+                    onClick={() =>
+                      handleClick(
+                        countriesGetURL,
+                        setCountries,
+                        popupState,
+                        'countries-rendered'
+                      )
+                    }
+                  >
                     Countries
                   </MenuItem>
-                  <MenuItem onClick={() => handleCitiesClick(popupState)}>
+                  <MenuItem
+                    className='Menu-list-item'
+                    onClick={() =>
+                      handleClick(
+                        citiesGetURL,
+                        setCities,
+                        popupState,
+                        'cities-rendered'
+                      )
+                    }
+                  >
                     Cities
                   </MenuItem>
                 </Menu>
@@ -71,25 +98,49 @@ export default function SideBar() {
           </PopupState>
         </div>
         <div className='Table'>
-          {noDataText && <div className='no-data-text'>{noDataText}</div>}
-          {suppliers && renderedData === suppliers && (
+          {!loading && <div className='no-data-text'>{noDataText}</div>}
+          {suppliers && renderedData === 'suppliers-rendered' && (
             <div>
               <div className='Tables'>
-                <SuppliersTable suppliers={suppliers} />
+                <SuppliersTable
+                  suppliers={suppliers}
+                  countries={countries}
+                  cities={cities}
+                  suppliersGetURL={suppliersGetURL}
+                  setSuppliers={setSuppliers}
+                  countriesGetURL={countriesGetURL}
+                  setCountries={setCountries}
+                  citiesGetURL={citiesGetURL}
+                  setCities={setCities}
+                  setRenderedData={setRenderedData}
+                />
               </div>
             </div>
           )}
-          {countries && renderedData === countries && (
+          {countries && renderedData === 'countries-rendered' && (
             <div>
               <div className='Tables'>
-                <CountriesTable countries={countries} />
+                <CountriesTable
+                  countries={countries}
+                  countriesGetURL={countriesGetURL}
+                  setCountries={setCountries}
+                  setRenderedData={setRenderedData}
+                />
               </div>
             </div>
           )}
-          {cities && renderedData === cities && (
+          {cities && renderedData === 'cities-rendered' && (
             <div>
               <div className='Tables'>
-                <CitiesTable cities={cities} />
+                <CitiesTable
+                  cities={cities}
+                  countries={countries}
+                  citiesGetURL={citiesGetURL}
+                  setCities={setCities}
+                  countriesGetURL={countriesGetURL}
+                  setCountries={setCountries}
+                  setRenderedData={setRenderedData}
+                />
               </div>
             </div>
           )}
