@@ -2,20 +2,25 @@ import React, { useState } from 'react';
 import { Form, Field } from 'react-final-form';
 import { TextField, Select } from 'final-form-material-ui';
 import { Paper, Grid, Button, MenuItem } from '@material-ui/core';
-import { createData, updateData } from '../helpers';
+import { updateData } from '../helpers';
 
 export default function CityUpdateForm({
   cities,
   countries,
   setCities,
   citiesGetURL,
+  // selected city data for filling labels
   selectedCity,
+  setSelectedCity,
+  selectedCityName,
+  setSelectedCityName,
+  selectedCityCountryName,
+  setSelectedCityCountryName,
+  //
   cityUpdateURL,
   resetMode,
   setResetMode,
   setRenderedData,
-  // showCreateForm,
-  // setShowCreateForm,
   // show|hide udpdate form
   setShowCityTable,
   showCityUpdateForm,
@@ -38,10 +43,12 @@ export default function CityUpdateForm({
   };
 
   const updateCity = (values) => {
+    values.cityName === '' && (values.cityName = selectedCity.name);
+    values.country === '' && (values.country = selectedCity.country.name);
     const [cityCountry] = countries.filter((c) => c.name === values.country);
     const { cityName, country } = values;
 
-    if (selectedCity && cityName && country) {
+    if (cityName && country) {
       const newCity = {
         id: selectedCity.id,
         name: cityName,
@@ -55,6 +62,7 @@ export default function CityUpdateForm({
       const body = JSON.stringify(newCity);
       updateData(citiesGetURL, setCities, cityUpdateURL, body);
       setCityAlreadyExist([]);
+      setSelectedCity({});
       setShowCityUpdateForm(false);
       setShowCityTable(true);
       setRenderedData('cities-rendered');
@@ -67,11 +75,13 @@ export default function CityUpdateForm({
       (city) => city.name.trim().toLowerCase() === val.trim().toLowerCase()
     );
     setResetMode(false);
+    setSelectedCityName('');
     setCityAlreadyExist(sameCities);
   };
 
   const handleCountriesSelect = () => {
     setResetMode(false);
+    setSelectedCityCountryName('');
   };
 
   const getCountriesMenu = () => {
@@ -81,6 +91,8 @@ export default function CityUpdateForm({
       </MenuItem>
     ));
   };
+
+  console.log(selectedCityCountryName);
 
   return (
     <div
@@ -92,7 +104,6 @@ export default function CityUpdateForm({
           onSubmit={(data) => updateCity(data)}
           validate={validate}
           render={({ form, handleSubmit, submitting }) => (
-            // className='Create-form' ll be removed
             <form onSubmit={handleSubmit} noValidate className='Create-form'>
               <Paper style={{ padding: 16 }}>
                 <Grid container alignItems='flex-start' spacing={8}>
@@ -115,7 +126,7 @@ export default function CityUpdateForm({
                       fullWidth
                       name='cityName'
                       component={TextField}
-                      label='City name'
+                      label={selectedCityName ? selectedCityName : 'City name'}
                     />
                   </Grid>
                   <Grid item xs={12} className='Select-country'>
@@ -123,7 +134,11 @@ export default function CityUpdateForm({
                       fullWidth
                       name='country'
                       component={Select}
-                      label='Select a Country'
+                      label={
+                        selectedCityCountryName
+                          ? selectedCityCountryName
+                          : 'Select a Country'
+                      }
                       onClick={() => handleCountriesSelect()}
                       formControlProps={{ fullWidth: true }}
                     >

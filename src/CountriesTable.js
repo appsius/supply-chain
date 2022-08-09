@@ -11,6 +11,7 @@ import Button from '@mui/material/Button';
 import { deleteData } from './helpers';
 import CountryUpdateForm from './forms-update/CountryUpdateForm';
 import CountryCreateForm from './forms-create/CountryCreateForm';
+import { Alert } from '@mui/material';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -31,6 +32,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function CountriesTable({
+  cities,
   countries,
   countriesGetURL,
   setCountries,
@@ -52,6 +54,7 @@ export default function CountriesTable({
   const [selectedCountry, setSelectedCountry] = useState({});
   const [selectedCountryName, setSelectedCountryName] = useState('');
   const [resetMode, setResetMode] = useState(true);
+  const [showAlert, setShowAlert] = useState(false);
 
   function handleShowCreateForm() {
     setResetMode(true);
@@ -72,16 +75,51 @@ export default function CountriesTable({
   }
 
   function handleCountryDelete(id) {
-    deleteData(countriesGetURL, setCountries, countryDeleteURL + id);
-    setShowCountryTable(true);
-    setRenderedData('countries-rendered');
+    const citiesOfCountry = cities.filter(
+      (city) => city.countryId === Number(id)
+    );
+    if (citiesOfCountry.length > 0) {
+      // set alert to not delete country/has city
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
+    } else {
+      deleteData(countriesGetURL, setCountries, countryDeleteURL + id);
+      setShowCountryTable(true);
+      setRenderedData('countries-rendered');
+    }
   }
 
   return (
-    <div>
+    <div style={{ position: 'relative' }}>
+      {showAlert && (
+        <Alert
+          variant='filled'
+          severity='error'
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            position: 'absolute',
+            left: '45%',
+            top: '-4.5vh',
+            transform: 'translate(-50%, -50%)',
+            width: '80vw',
+            height: '5.5vh',
+            borderRadius: 0,
+            backgroundColor: 'red',
+            color: 'white',
+            fontSize: '1.65rem',
+            fontWeight: 'bold',
+            fontFamily: 'Roboto',
+          }}
+        >
+          Country has a city — Don't remove it!
+        </Alert>
+      )}
       <TableContainer
         component={Paper}
-        className={showCountryTable ? 'show' : 'hide'}
+        className={'TableContainer' && showCountryTable ? 'show' : 'hide'}
       >
         <Table sx={{ minWidth: 700 }} aria-label='customized table'>
           <TableHead>
@@ -150,10 +188,12 @@ export default function CountriesTable({
         countries={countries}
         countriesGetURL={countriesGetURL}
         setCountries={setCountries}
+        // selected country data for filling labels
         selectedCountry={selectedCountry}
         setSelectedCountry={setSelectedCountry}
         selectedCountryName={selectedCountryName}
         setSelectedCountryName={setSelectedCountryName}
+        //
         countryUpdateURL={countryUpdateURL}
         resetMode={resetMode}
         setResetMode={setResetMode}

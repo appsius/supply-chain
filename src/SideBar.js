@@ -150,6 +150,7 @@ export default function SideBar() {
             <div>
               <div className='Tables'>
                 <CountriesTable
+                  cities={cities}
                   countries={countries}
                   countriesGetURL={countriesGetURL}
                   setCountries={setCountries}

@@ -5,13 +5,28 @@ import { Paper, Grid, Button, MenuItem } from '@material-ui/core';
 import { updateData } from '../helpers';
 
 export default function SupplierUpdateForm({
-  countries,
   cities,
+  countries,
+  supplierTypes,
   suppliersGetURL,
   setSuppliers,
-  selectedUpdateSupplier,
   supplierUpdateURL,
-  setRenderedData,
+  selectedUpdateSupplier,
+  setSelectedUpdateSupplier,
+  updateSupplierCode,
+  setUpdateSupplierCode,
+  updatedSupplierName,
+  setUpdatedSupplierName,
+  updatedSupplierDName,
+  setUpdatedSupplierDName,
+  updatedSupplierAddress,
+  setUpdatedSupplierAddress,
+  updatedSupplierCity,
+  setUpdatedSupplierCity,
+  updatedSupplierCountry,
+  setUpdatedSupplierCountry,
+  updatedSupplierSType,
+  setUpdatedSupplierSType,
   // validation reset modes
   resetCodeMode,
   resetNameMode,
@@ -31,7 +46,11 @@ export default function SupplierUpdateForm({
   setShowSupplierTable,
   showSupplierUpdateForm,
   setShowSupplierUpdateForm,
+  setRenderedData,
 }) {
+  console.log(updatedSupplierCity);
+  console.log(updatedSupplierCountry);
+  console.log(updatedSupplierSType);
   const validate = (values) => {
     const errors = {};
     if (!values.code && resetCodeMode === false) {
@@ -59,92 +78,97 @@ export default function SupplierUpdateForm({
     }
     return errors;
   };
-  const [supplierTypes, setSupplierTypes] = useState([]);
+  const [selectedCities, setSelectedCities] = useState([]);
   const [selectedCity, setSelectedCity] = useState({});
   const [selectedCountry, setSelectedCountry] = useState({});
   const [selectedSupplierType, setSelectedSupplierType] = useState({});
-  const [selectedCities, setSelectedCities] = useState([]);
   const [countryHasNoCity, setCountryHasNoCity] = useState(false);
-
-  useEffect(() => {
-    fetch('http://45.130.15.52:6501/api/services/app/SupplierType/GetAll')
-      .then((res) => res.json())
-      .then(({ result }) => setSupplierTypes(result.items));
-  }, []);
 
   const updateSupplier = async (values) => {
     const { code, name, displayName, address } = values;
-    const newSupplier = {
+
+    let updatedSupplier = {
       id: selectedUpdateSupplier.id,
-      code,
-      name,
-      displayName,
-      address,
-      cityId: selectedCity.id,
-      countryId: selectedCountry.id,
-      supplierTypeId: selectedSupplierType.id,
+      code: code ? code : selectedUpdateSupplier.code,
+      name: name ? name : selectedUpdateSupplier.name,
+      displayName: displayName
+        ? displayName
+        : selectedUpdateSupplier.displayName,
+      address: address ? address : selectedUpdateSupplier.address,
+      cityId: selectedCity.id ? selectedCity.id : updatedSupplierCity.id,
+      countryId: selectedCountry.id
+        ? selectedCountry.id
+        : updatedSupplierCountry.id,
+      supplierTypeId: selectedSupplierType.id
+        ? selectedSupplierType.id
+        : updatedSupplierSType.id,
     };
 
+    console.log(updatedSupplier);
+
     if (
-      selectedUpdateSupplier &&
-      code &&
-      name &&
-      displayName &&
-      address &&
-      selectedCity.id &&
-      selectedCountry.id &&
-      selectedSupplierType.id
+      updatedSupplier.code &&
+      updatedSupplier.name &&
+      updatedSupplier.displayName &&
+      updatedSupplier.address &&
+      updatedSupplier.cityId &&
+      updatedSupplier.countryId &&
+      updatedSupplier.supplierTypeId
     ) {
-      const body = JSON.stringify(newSupplier);
+      const body = JSON.stringify(updatedSupplier);
       updateData(suppliersGetURL, setSuppliers, supplierUpdateURL, body);
-      setSelectedCountry({});
+      // reset update initial data
+      setUpdatedSupplierCity({});
+      setUpdatedSupplierCountry({});
+      setUpdatedSupplierSType({});
+      setSelectedUpdateSupplier({});
+      // reset update later data
       setSelectedCities([]);
+      setSelectedCity({});
+      setSelectedCountry({});
       setSelectedSupplierType({});
+      //
       setShowSupplierUpdateForm(false);
       setShowSupplierTable(true);
       setRenderedData('suppliers-rendered');
-      console.log(newSupplier);
+      // console.log(updatedSupplier);
     }
   };
 
-  const handleCitySelected = (countryID, city) => {
-    const [countryOfCity] = countries.filter((c) => c.id === countryID);
-    setSelectedCountry(countryOfCity);
+  const handleCitySelected = (city) => {
+    const countryOfCity = countries.filter((c) => c.id === city.countryId);
+    setSelectedCountry(countryOfCity[0]);
     setSelectedCity(city);
   };
 
-  const handleCountrySelected = (countryID) => {
+  const handleCountrySelected = (country) => {
     const citiesOfCountry = cities.filter(
-      (city) => city.countryId === countryID
+      (city) => city.countryId === country.id
     );
     citiesOfCountry.length > 0
       ? setCountryHasNoCity(false)
       : setCountryHasNoCity(true);
     setSelectedCities(citiesOfCountry);
+    setSelectedCountry(country);
   };
 
-  const handleSupplierTypeSelected = (supplierTypeID) => {
-    const [filteredSupplierType] = supplierTypes.filter(
-      (sType) => sType.id === supplierTypeID
-    );
-    setSelectedSupplierType(filteredSupplierType);
+  const handleSupplierTypeSelected = (supplierType) => {
+    setSelectedSupplierType(supplierType);
   };
 
   const getCitiesMenu = () => {
     if (selectedCities.length > 0) {
       return selectedCities.map((sCity) => {
         const { id, name, countryId } = sCity;
-        if (countryId) {
-          return (
-            <MenuItem
-              key={id}
-              value={name}
-              onClick={() => handleCitySelected(countryId, sCity)}
-            >
-              {name}
-            </MenuItem>
-          );
-        }
+        return (
+          <MenuItem
+            key={id}
+            value={name}
+            onClick={() => handleCitySelected(sCity)}
+          >
+            {name}
+          </MenuItem>
+        );
       });
     } else {
       return cities.map((city) => {
@@ -154,7 +178,7 @@ export default function SupplierUpdateForm({
             <MenuItem
               key={id}
               value={name}
-              onClick={() => handleCitySelected(countryId, city)}
+              onClick={() => handleCitySelected(city)}
             >
               {name}
             </MenuItem>
@@ -171,7 +195,7 @@ export default function SupplierUpdateForm({
         <MenuItem
           key={id}
           value={name}
-          onClick={() => handleCountrySelected(id)}
+          onClick={() => handleCountrySelected(selectedCountry)}
         >
           {name}
         </MenuItem>
@@ -183,7 +207,7 @@ export default function SupplierUpdateForm({
           <MenuItem
             key={id}
             value={name}
-            onClick={() => handleCountrySelected(id)}
+            onClick={() => handleCountrySelected(country)}
           >
             {name}
           </MenuItem>
@@ -199,7 +223,7 @@ export default function SupplierUpdateForm({
         <MenuItem
           key={id}
           value={name}
-          onClick={() => handleSupplierTypeSelected(id)}
+          onClick={() => handleSupplierTypeSelected(supplierType)}
         >
           {name}
         </MenuItem>
@@ -209,25 +233,45 @@ export default function SupplierUpdateForm({
 
   // resetting validation for supplier after submit
   const handleCodeResetMode = () => {
+    setUpdateSupplierCode('');
     setResetCodeMode(false);
   };
   const handleNameResetMode = () => {
+    setUpdatedSupplierName('');
     setResetNameMode(false);
   };
   const handleDisplayNameResetMode = () => {
+    setUpdatedSupplierDName('');
     setResetDNameMode(false);
   };
   const handleAdressResetMode = () => {
+    setUpdatedSupplierAddress('');
     setResetAddresssMode(false);
   };
   const handleCityResetMode = () => {
+    setUpdatedSupplierCity({});
     setResetCityMode(false);
   };
   const handleCountryResetMode = () => {
+    setUpdatedSupplierCountry({});
     setResetCountryMode(false);
   };
   const handleSupplierTypeResetMode = () => {
+    setUpdatedSupplierSType({});
     setResetSTypeMode(false);
+  };
+
+  const handleCancelButton = () => {
+    // reset update data
+    setUpdatedSupplierCity({});
+    setUpdatedSupplierCountry({});
+    setUpdatedSupplierSType({});
+    setSelectedUpdateSupplier({});
+    //
+    setSelectedCities([]);
+    setShowSupplierUpdateForm(false);
+    setShowSupplierTable(true);
+    setRenderedData('suppliers-rendered');
   };
 
   return (
@@ -262,7 +306,11 @@ export default function SupplierUpdateForm({
                       fullWidth
                       name='code'
                       component={TextField}
-                      label='Supplier code'
+                      label={
+                        updateSupplierCode
+                          ? updateSupplierCode
+                          : 'Supplier code'
+                      }
                       onClick={() => handleCodeResetMode()}
                     />
                   </Grid>
@@ -271,7 +319,11 @@ export default function SupplierUpdateForm({
                       fullWidth
                       name='name'
                       component={TextField}
-                      label='Supplier Name'
+                      label={
+                        updatedSupplierName
+                          ? updatedSupplierName
+                          : 'Supplier Name'
+                      }
                       onClick={() => handleNameResetMode()}
                     />
                   </Grid>
@@ -280,7 +332,11 @@ export default function SupplierUpdateForm({
                       fullWidth
                       name='displayName'
                       component={TextField}
-                      label='Display Name'
+                      label={
+                        updatedSupplierDName
+                          ? updatedSupplierDName
+                          : 'Display Name'
+                      }
                       onClick={() => handleDisplayNameResetMode()}
                     />
                   </Grid>
@@ -289,7 +345,11 @@ export default function SupplierUpdateForm({
                       fullWidth
                       name='address'
                       component={TextField}
-                      label='Address'
+                      label={
+                        updatedSupplierAddress
+                          ? updatedSupplierAddress
+                          : 'Address'
+                      }
                       onClick={() => handleAdressResetMode()}
                     />
                   </Grid>
@@ -298,10 +358,12 @@ export default function SupplierUpdateForm({
                       fullWidth
                       name='selectedCityName'
                       component={Select}
-                      label={
-                        countryHasNoCity ? 'No city found' : 'Select a City'
-                      }
                       formControlProps={{ fullWidth: true }}
+                      label={
+                        updatedSupplierCity.name
+                          ? updatedSupplierCity.name
+                          : 'Select a city'
+                      }
                       onClick={() => handleCityResetMode()}
                       disabled={countryHasNoCity}
                     >
@@ -313,26 +375,48 @@ export default function SupplierUpdateForm({
                       fullWidth
                       name='selectedCountryName'
                       component={Select}
-                      label='Select a Country'
                       formControlProps={{ fullWidth: true }}
+                      label={
+                        updatedSupplierCountry.name
+                          ? updatedSupplierCountry.name
+                          : 'Select a Country'
+                      }
                       onClick={() => handleCountryResetMode()}
                     >
                       {getCountriesMenu()}
                     </Field>
                   </Grid>
-                  <Grid item xs={6} className='Select-supplier-type'>
+                  <Grid item xs={12} className='Select-supplier-type'>
                     <Field
                       fullWidth
                       name='selectedSupplierTypeName'
                       component={Select}
-                      label='Select Supplier Type'
                       formControlProps={{ fullWidth: true }}
+                      label={
+                        updatedSupplierSType.name
+                          ? updatedSupplierSType.name
+                          : 'Select a Supplier Type'
+                      }
                       onClick={() => handleSupplierTypeResetMode()}
                     >
                       {getSupplierTypesMenu()}
                     </Field>
                   </Grid>
-                  <Grid item style={{ marginTop: 16 }}>
+                  <Grid item xs={12} style={{ marginTop: 16 }}>
+                    <Button
+                      className='Form-buttons Cancel-button'
+                      variant='contained'
+                      type='cancel'
+                      onClick={() => {
+                        handleCancelButton();
+                        setTimeout(() => {
+                          form.reset();
+                        }, 1000);
+                      }}
+                      disabled={submitting}
+                    >
+                      Cancel
+                    </Button>
                     <Button
                       className='Form-buttons'
                       variant='contained'

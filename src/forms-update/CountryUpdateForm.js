@@ -8,6 +8,7 @@ export default function CountryUpdateForm({
   countries,
   countriesGetURL,
   setCountries,
+  // selected country data for filling labels
   selectedCountry,
   setSelectedCountry,
   selectedCountryName,
@@ -21,13 +22,12 @@ export default function CountryUpdateForm({
   showCountryUpdateForm,
   setShowCountryUpdateForm,
 }) {
-  console.log(selectedCountryName);
   const validate = (values) => {
     const errors = {};
     if (!values.country && resetMode === false) {
       errors.country = 'Required';
     }
-    if (countryAlreadyExist.length > 1) {
+    if (countryAlreadyExist.length > 0) {
       errors.country = 'Country already exist!';
     }
     return errors;
@@ -35,15 +35,17 @@ export default function CountryUpdateForm({
   const [countryAlreadyExist, setCountryAlreadyExist] = useState('');
 
   const updateCountry = async (values) => {
+    values.country === '' && (values.country = selectedCountry.name);
     const updatedCountry = {
       id: selectedCountry.id,
       name: values.country,
     };
 
-    if (selectedCountry && values.country) {
+    if (values.country) {
       const body = JSON.stringify(updatedCountry);
       setCountryAlreadyExist([]);
       updateData(countriesGetURL, setCountries, countryUpdateURL, body);
+      setSelectedCountry({});
       setShowCountryUpdateForm(false);
       setShowCountryTable(true);
       setRenderedData('countries-rendered');
@@ -52,9 +54,9 @@ export default function CountryUpdateForm({
   };
 
   const controlUpdateCountryExist = (val) => {
-    console.log(val, countries, selectedCountry);
     const sameCountries = countries.filter(
       (country) =>
+        country.name !== '' &&
         country.name.trim().toLowerCase() === val.trim().toLowerCase()
     );
     setResetMode(false);

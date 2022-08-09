@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -38,10 +38,6 @@ export default function SuppliersTable({
   cities,
   suppliersGetURL,
   setSuppliers,
-  countriesGetURL,
-  setCountries,
-  citiesGetURL,
-  setCities,
   setRenderedData,
   // show|hide forms or table
   showSupplierTable,
@@ -51,14 +47,19 @@ export default function SuppliersTable({
   showSupplierUpdateForm,
   setShowSupplierUpdateForm,
 }) {
+  // api URLs
   const supplierCreateURL =
     'http://45.130.15.52:6501/api/services/app/Supplier/Create';
   const supplierUpdateURL =
     'http://45.130.15.52:6501/api/services/app/Supplier/Update';
   const supplierDeleteURL =
     'http://45.130.15.52:6501/api/services/app/Supplier/Delete?Id=';
-  const [selectedUpdateSupplier, setSelectedUpdateSupplier] = useState({});
-
+  useEffect(() => {
+    fetch('http://45.130.15.52:6501/api/services/app/SupplierType/GetAll')
+      .then((res) => res.json())
+      .then(({ result }) => setSupplierTypes(result.items));
+  }, []);
+  const [supplierTypes, setSupplierTypes] = useState([]);
   // validation reset controllers
   const [resetCodeMode, setResetCodeMode] = useState(false);
   const [resetNameMode, setResetNameMode] = useState(false);
@@ -67,6 +68,15 @@ export default function SuppliersTable({
   const [resetCityMode, setResetCityMode] = useState(false);
   const [resetCountryMode, setResetCountryMode] = useState(false);
   const [resetSTypeMode, setResetSTypeMode] = useState(false);
+  // selected city data for filling labels
+  const [selectedUpdateSupplier, setSelectedUpdateSupplier] = useState({});
+  const [updateSupplierCode, setUpdateSupplierCode] = useState('');
+  const [updatedSupplierName, setUpdatedSupplierName] = useState('');
+  const [updatedSupplierDName, setUpdatedSupplierDName] = useState('');
+  const [updatedSupplierAddress, setUpdatedSupplierAddress] = useState('');
+  const [updatedSupplierCity, setUpdatedSupplierCity] = useState({});
+  const [updatedSupplierCountry, setUpdatedSupplierCountry] = useState({});
+  const [updatedSupplierSType, setUpdatedSupplierSType] = useState({});
 
   const openSupplierForm = () => {
     // validation modes
@@ -84,7 +94,31 @@ export default function SuppliersTable({
   };
 
   function handleSupplierUpdate(supplier) {
+    const selectedCity = cities.filter((city) => city.id === supplier.cityId);
+    const selectedCountry = countries.filter(
+      (country) => country.id === supplier.city.country.id
+    );
+    const selectedSType = supplierTypes.filter(
+      (sType) => sType.id === supplier.supplierTypeId
+    );
+
+    // selected city data for filling labels
     setSelectedUpdateSupplier(supplier);
+    setUpdateSupplierCode(supplier.code);
+    setUpdatedSupplierName(supplier.name);
+    setUpdatedSupplierDName(supplier.displayName);
+    setUpdatedSupplierAddress(supplier.address);
+    setUpdatedSupplierCity(selectedCity[0]);
+    setUpdatedSupplierCountry(selectedCountry[0]);
+    setUpdatedSupplierSType(selectedSType[0]);
+    // validation modes
+    setResetCodeMode(true);
+    setResetNameMode(true);
+    setResetDNameMode(true);
+    setResetAddresssMode(true);
+    setResetCityMode(true);
+    setResetCountryMode(true);
+    setResetSTypeMode(true);
     // hide-show table and forms
     setShowSupplierTable(false);
     setShowSupplierCreateForm(false);
@@ -107,12 +141,13 @@ export default function SuppliersTable({
           <TableHead>
             <TableRow>
               <StyledTableCell align='left'>ID</StyledTableCell>
-              <StyledTableCell align='center'>Supplier Type</StyledTableCell>
               <StyledTableCell align='center'>Code</StyledTableCell>
               <StyledTableCell align='center'>Name</StyledTableCell>
+              <StyledTableCell align='center'>Display Name</StyledTableCell>
               <StyledTableCell align='center'>Address</StyledTableCell>
-              <StyledTableCell align='center'>Country</StyledTableCell>
               <StyledTableCell align='center'>City</StyledTableCell>
+              <StyledTableCell align='center'>Country</StyledTableCell>
+              <StyledTableCell align='center'>Supplier Type</StyledTableCell>
               <StyledTableCell align='right' className='Buttons'>
                 <Button
                   className='Button Insert-button'
@@ -127,22 +162,47 @@ export default function SuppliersTable({
           </TableHead>
           <TableBody>
             {suppliers.map((supplier) => {
-              const { id, supplierType, code, name, address, city, country } =
-                supplier;
+              if (
+                !supplier.id ||
+                !supplier.code ||
+                !supplier.name ||
+                !supplier.displayName ||
+                !supplier.address ||
+                !supplier.city ||
+                !supplier.supplierType
+              )
+                return;
+
+              const {
+                id,
+                code,
+                name,
+                displayName,
+                address,
+                city,
+                supplierType,
+              } = supplier;
+
+              // console.log(id, code, name, displayName, address);
+              // console.log(city, supplierType);
+
               return (
                 <StyledTableRow key={id}>
                   <StyledTableCell align='left'>{id}</StyledTableCell>
-                  <StyledTableCell align='center'>
-                    {supplierType.name}
-                  </StyledTableCell>
                   <StyledTableCell align='center'>{code}</StyledTableCell>
                   <StyledTableCell align='center'>{name}</StyledTableCell>
+                  <StyledTableCell align='center'>
+                    {displayName}
+                  </StyledTableCell>
                   <StyledTableCell align='center'>{address}</StyledTableCell>
                   <StyledTableCell align='center'>
                     {city ? city.name : 'City not found'}
                   </StyledTableCell>
                   <StyledTableCell align='center'>
                     {city ? city.country.name : 'Country not found'}
+                  </StyledTableCell>
+                  <StyledTableCell align='center'>
+                    {supplierType.name}
                   </StyledTableCell>
                   <StyledTableCell align='right' className='Buttons'>
                     <Button
@@ -190,21 +250,35 @@ export default function SuppliersTable({
         setResetCityMode={setResetCityMode}
         setResetCountryMode={setResetCountryMode}
         setResetSTypeMode={setResetSTypeMode}
-        // show|hide country create form or table
+        // show|hide supplier create form or table
         setShowSupplierTable={setShowSupplierTable}
         showSupplierCreateForm={showSupplierCreateForm}
         setShowSupplierCreateForm={setShowSupplierCreateForm}
       />
       <SupplierUpdateForm
-        countries={countries}
         cities={cities}
+        countries={countries}
+        supplierTypes={supplierTypes}
         suppliersGetURL={suppliersGetURL}
         setSuppliers={setSuppliers}
-        selectedUpdateSupplier={selectedUpdateSupplier}
         supplierUpdateURL={supplierUpdateURL}
-        // showCreateForm={showCreateForm}
-        // setShowCreateForm={setShowCreateForm}
-        setRenderedData={setRenderedData}
+        // selected supplier data for filling labels
+        selectedUpdateSupplier={selectedUpdateSupplier}
+        setSelectedUpdateSupplier={setSelectedUpdateSupplier}
+        updateSupplierCode={updateSupplierCode}
+        setUpdateSupplierCode={setUpdateSupplierCode}
+        updatedSupplierName={updatedSupplierName}
+        setUpdatedSupplierName={setUpdatedSupplierName}
+        updatedSupplierDName={updatedSupplierDName}
+        setUpdatedSupplierDName={setUpdatedSupplierDName}
+        updatedSupplierAddress={updatedSupplierAddress}
+        setUpdatedSupplierAddress={setUpdatedSupplierAddress}
+        updatedSupplierCity={updatedSupplierCity}
+        setUpdatedSupplierCity={setUpdatedSupplierCity}
+        updatedSupplierCountry={updatedSupplierCountry}
+        setUpdatedSupplierCountry={setUpdatedSupplierCountry}
+        updatedSupplierSType={updatedSupplierSType}
+        setUpdatedSupplierSType={setUpdatedSupplierSType}
         // validation reset modes
         resetCodeMode={resetCodeMode}
         resetNameMode={resetNameMode}
@@ -220,10 +294,11 @@ export default function SuppliersTable({
         setResetCityMode={setResetCityMode}
         setResetCountryMode={setResetCountryMode}
         setResetSTypeMode={setResetSTypeMode}
-        // show|hide country create form or table
+        // show|hide supplier update form or table
         setShowSupplierTable={setShowSupplierTable}
         showSupplierUpdateForm={showSupplierUpdateForm}
         setShowSupplierUpdateForm={setShowSupplierUpdateForm}
+        setRenderedData={setRenderedData}
       />
     </div>
   );
