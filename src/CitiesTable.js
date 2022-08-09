@@ -10,6 +10,7 @@ import Paper from '@mui/material/Paper';
 import { Button } from '@mui/material';
 import { deleteData } from './helpers';
 import CityCreateForm from './forms-create/CityCreateForm';
+import CityUpdateForm from './forms-update/CityUpdateForm';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -39,26 +40,48 @@ export default function CitiesTable({
   countriesGetURL,
   setCountries,
   setRenderedData,
+  // show | hide forms
+  showCityTable,
+  setShowCityTable,
+  showCityCreateForm,
+  setShowCityCreateForm,
+  showCityUpdateForm,
+  setShowCityUpdateForm,
 }) {
-  const [showCreateForm, setShowCreateForm] = useState(true);
   const cityCreateURL = 'http://45.130.15.52:6501/api/services/app/City/Create';
-  // const cityUpdateURL = `http://45.130.15.52:6501/api/services/app/City/Update?Id=`;
+  const cityUpdateURL = `http://45.130.15.52:6501/api/services/app/City/Update`;
   const cityDeleteURL = `http://45.130.15.52:6501/api/services/app/City/Delete?Id=`;
+  const [selectedCity, setSelectedCity] = useState({});
+  const [resetMode, setResetMode] = useState(true);
+
+  function openCityForm() {
+    setResetMode(true);
+    // hide-show table and forms
+    setShowCityTable(false);
+    setShowCityUpdateForm(false);
+    setShowCityCreateForm(true);
+  }
+
+  function handleCityUpdate(city) {
+    setSelectedCity(city);
+    setResetMode(true);
+    // hide-show table and forms
+    setShowCityTable(false);
+    setShowCityCreateForm(false);
+    setShowCityUpdateForm(true);
+  }
 
   function handleCityDelete(id) {
     deleteData(citiesGetURL, setCities, cityDeleteURL + id);
+    setShowCityTable(true);
     setRenderedData('cities-rendered');
-  }
-
-  function openCityForm() {
-    setShowCreateForm(false);
   }
 
   return (
     <div>
       <TableContainer
         component={Paper}
-        className={showCreateForm ? 'show' : 'hide'}
+        className={showCityTable ? 'show' : 'hide'}
       >
         <Table sx={{ minWidth: 700 }} aria-label='customized table'>
           <TableHead>
@@ -87,7 +110,11 @@ export default function CitiesTable({
                   {city.country ? city.country.name : 'Name-Not-Found!'}
                 </StyledTableCell>
                 <StyledTableCell align='right' className='Buttons'>
-                  <Button className='Button Update-button' variant='contained'>
+                  <Button
+                    className='Button Update-button'
+                    variant='contained'
+                    onClick={() => handleCityUpdate(city)}
+                  >
                     UPDATE
                   </Button>
                   <Button
@@ -106,15 +133,37 @@ export default function CitiesTable({
         </Table>
       </TableContainer>
       <CityCreateForm
+        cities={cities}
         countries={countries}
         citiesGetURL={citiesGetURL}
         setCities={setCities}
         cityCreateURL={cityCreateURL}
         countriesGetURL={countriesGetURL}
         setCountries={setCountries}
-        showCreateForm={showCreateForm}
-        setShowCreateForm={setShowCreateForm}
+        resetMode={resetMode}
+        setResetMode={setResetMode}
         setRenderedData={setRenderedData}
+        // show | hide forms
+        setShowCityTable={setShowCityTable}
+        showCityCreateForm={showCityCreateForm}
+        setShowCityCreateForm={setShowCityCreateForm}
+      />
+      <CityUpdateForm
+        cities={cities}
+        countries={countries}
+        citiesGetURL={citiesGetURL}
+        setCities={setCities}
+        selectedCity={selectedCity}
+        cityUpdateURL={cityUpdateURL}
+        countriesGetURL={countriesGetURL}
+        setCountries={setCountries}
+        resetMode={resetMode}
+        setResetMode={setResetMode}
+        setRenderedData={setRenderedData}
+        // show | hide forms
+        setShowCityTable={setShowCityTable}
+        showCityUpdateForm={showCityUpdateForm}
+        setShowCityUpdateForm={setShowCityUpdateForm}
       />
     </div>
   );

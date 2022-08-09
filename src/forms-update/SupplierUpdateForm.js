@@ -2,14 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { Form, Field } from 'react-final-form';
 import { TextField, Select } from 'final-form-material-ui';
 import { Paper, Grid, Button, MenuItem } from '@material-ui/core';
-import { createData } from '../helpers';
+import { updateData } from '../helpers';
 
-export default function SupplierCreateForm({
+export default function SupplierUpdateForm({
   countries,
   cities,
   suppliersGetURL,
   setSuppliers,
-  supplierCreateURL,
+  selectedUpdateSupplier,
+  supplierUpdateURL,
   setRenderedData,
   // validation reset modes
   resetCodeMode,
@@ -26,10 +27,10 @@ export default function SupplierCreateForm({
   setResetCityMode,
   setResetCountryMode,
   setResetSTypeMode,
-  // show|hide country create form or table
+  // show|hide udpdate form
   setShowSupplierTable,
-  showSupplierCreateForm,
-  setShowSupplierCreateForm,
+  showSupplierUpdateForm,
+  setShowSupplierUpdateForm,
 }) {
   const validate = (values) => {
     const errors = {};
@@ -71,9 +72,10 @@ export default function SupplierCreateForm({
       .then(({ result }) => setSupplierTypes(result.items));
   }, []);
 
-  const createNewSupplier = async (values) => {
+  const updateSupplier = async (values) => {
     const { code, name, displayName, address } = values;
     const newSupplier = {
+      id: selectedUpdateSupplier.id,
       code,
       name,
       displayName,
@@ -84,6 +86,7 @@ export default function SupplierCreateForm({
     };
 
     if (
+      selectedUpdateSupplier &&
       code &&
       name &&
       displayName &&
@@ -93,11 +96,11 @@ export default function SupplierCreateForm({
       selectedSupplierType.id
     ) {
       const body = JSON.stringify(newSupplier);
-      createData(suppliersGetURL, setSuppliers, supplierCreateURL, body);
+      updateData(suppliersGetURL, setSuppliers, supplierUpdateURL, body);
       setSelectedCountry({});
       setSelectedCities([]);
       setSelectedSupplierType({});
-      setShowSupplierCreateForm(false);
+      setShowSupplierUpdateForm(false);
       setShowSupplierTable(true);
       setRenderedData('suppliers-rendered');
       console.log(newSupplier);
@@ -105,10 +108,7 @@ export default function SupplierCreateForm({
   };
 
   const handleCitySelected = (countryID, city) => {
-    let countryOfCity = [];
-    if (countryID) {
-      [countryOfCity] = countries.filter((c) => c.id === countryID);
-    }
+    const [countryOfCity] = countries.filter((c) => c.id === countryID);
     setSelectedCountry(countryOfCity);
     setSelectedCity(city);
   };
@@ -218,9 +218,11 @@ export default function SupplierCreateForm({
     setResetDNameMode(false);
   };
   const handleAdressResetMode = () => {
+    console.log(resetAddressMode);
     setResetAddresssMode(false);
   };
   const handleCityResetMode = () => {
+    console.log(resetCityMode);
     setResetCityMode(false);
   };
   const handleCountryResetMode = () => {
@@ -233,13 +235,13 @@ export default function SupplierCreateForm({
   return (
     <div
       style={{ padding: '16px', margin: 'auto', maxWidth: 7500 }}
-      className={showSupplierCreateForm ? 'show' : 'hide'}
+      className={showSupplierUpdateForm ? 'show' : 'hide'}
     >
-      <div className='Supplly-create Create-form'>
+      <div className='Supplier-update Create-form'>
         <Form
-          onSubmit={(data) => createNewSupplier(data)}
+          onSubmit={(data) => updateSupplier(data)}
           validate={validate}
-          render={({ form, handleSubmit, submitting, pristine, values }) => (
+          render={({ form, handleSubmit, submitting }) => (
             <form
               onSubmit={handleSubmit}
               noValidate
@@ -254,7 +256,7 @@ export default function SupplierCreateForm({
                         fontWeight: '500',
                       }}
                     >
-                      Supplier Create Form
+                      Supplier Update Form
                     </h2>
                   </Grid>
                   <Grid item xs={6}>

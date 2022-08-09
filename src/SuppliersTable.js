@@ -10,6 +10,7 @@ import Paper from '@mui/material/Paper';
 import { Button } from '@mui/material';
 import SupplierCreateForm from './forms-create/SupplierCreateForm';
 import { deleteData } from './helpers';
+import SupplierUpdateForm from './forms-update/SupplierUpdateForm';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -42,28 +43,63 @@ export default function SuppliersTable({
   citiesGetURL,
   setCities,
   setRenderedData,
+  // show|hide forms or table
+  showSupplierTable,
+  setShowSupplierTable,
+  showSupplierCreateForm,
+  setShowSupplierCreateForm,
+  showSupplierUpdateForm,
+  setShowSupplierUpdateForm,
 }) {
-  const [showCreateForm, setShowCreateForm] = useState(true);
   const supplierCreateURL =
     'http://45.130.15.52:6501/api/services/app/Supplier/Create';
-  // const supplierUpdateURL = `http://45.130.15.52:6501/api/services/app/Supplier/Update?Id=`;
+  const supplierUpdateURL = `http://45.130.15.52:6501/api/services/app/Supplier/Update`;
   const supplierDeleteURL = `http://45.130.15.52:6501/api/services/app/Supplier/Delete?Id=`;
+  const [selectedUpdateSupplier, setSelectedUpdateSupplier] = useState({});
 
-  function openSupplierForm() {
-    setShowCreateForm(false);
+  // validation reset controllers
+  const [resetCodeMode, setResetCodeMode] = useState(false);
+  const [resetNameMode, setResetNameMode] = useState(false);
+  const [resetDNameMode, setResetDNameMode] = useState(false);
+  const [resetAddressMode, setResetAddresssMode] = useState(false);
+  const [resetCityMode, setResetCityMode] = useState(false);
+  const [resetCountryMode, setResetCountryMode] = useState(false);
+  const [resetSTypeMode, setResetSTypeMode] = useState(false);
+
+  const openSupplierForm = () => {
+    // validation modes
+    setResetCodeMode(true);
+    setResetNameMode(true);
+    setResetDNameMode(true);
+    setResetAddresssMode(true);
+    setResetCityMode(true);
+    setResetCountryMode(true);
+    setResetSTypeMode(true);
+    // hide-show table and forms
+    setShowSupplierTable(false);
+    setShowSupplierUpdateForm(false);
+    setShowSupplierCreateForm(true);
+  };
+
+  function handleSupplierUpdate(supplier) {
+    setSelectedUpdateSupplier(supplier);
+    // hide-show table and forms
+    setShowSupplierTable(false);
+    setShowSupplierCreateForm(false);
+    setShowSupplierUpdateForm(true);
   }
 
-  function handleSupplierDelete(id) {
+  const handleSupplierDelete = (id) => {
     deleteData(suppliersGetURL, setSuppliers, supplierDeleteURL + id);
-    setRenderedData('supplier-rendered');
-  }
+    setShowSupplierTable(true);
+    setRenderedData('suppliers-rendered');
+  };
 
   return (
     <div>
       <TableContainer
         component={Paper}
-        className={showCreateForm ? 'show' : 'hide'}
-        // className={'Table ' + showCreateForm ? 'show' : 'hide'}
+        className={showSupplierTable ? 'show' : 'hide'}
       >
         <Table sx={{ minWidth: 700 }} aria-label='customized table'>
           <TableHead>
@@ -89,7 +125,8 @@ export default function SuppliersTable({
           </TableHead>
           <TableBody>
             {suppliers.map((supplier) => {
-              const { id, supplierType, code, name, address, city } = supplier;
+              const { id, supplierType, code, name, address, city, country } =
+                supplier;
               return (
                 <StyledTableRow key={id}>
                   <StyledTableCell align='left'>{id}</StyledTableCell>
@@ -100,15 +137,16 @@ export default function SuppliersTable({
                   <StyledTableCell align='center'>{name}</StyledTableCell>
                   <StyledTableCell align='center'>{address}</StyledTableCell>
                   <StyledTableCell align='center'>
-                    {city ? city.country.name : 'City not found'}
+                    {city ? city.name : 'City not found'}
                   </StyledTableCell>
                   <StyledTableCell align='center'>
-                    {city ? city.name : 'Country not found'}
+                    {city ? city.country.name : 'Country not found'}
                   </StyledTableCell>
                   <StyledTableCell align='right' className='Buttons'>
                     <Button
                       className='Button Update-button'
                       variant='contained'
+                      onClick={() => handleSupplierUpdate(supplier)}
                     >
                       UPDATE
                     </Button>
@@ -134,13 +172,56 @@ export default function SuppliersTable({
         suppliersGetURL={suppliersGetURL}
         setSuppliers={setSuppliers}
         supplierCreateURL={supplierCreateURL}
-        countriesGetURL={countriesGetURL}
-        setCountries={setCountries}
-        citiesGetURL={citiesGetURL}
-        setCities={setCities}
-        showCreateForm={showCreateForm}
-        setShowCreateForm={setShowCreateForm}
         setRenderedData={setRenderedData}
+        // validation reset modes
+        resetCodeMode={resetCodeMode}
+        resetNameMode={resetNameMode}
+        resetDNameMode={resetDNameMode}
+        resetAddressMode={resetAddressMode}
+        resetCityMode={resetCityMode}
+        resetCountryMode={resetCountryMode}
+        resetSTypeMode={resetSTypeMode}
+        setResetCodeMode={setResetCodeMode}
+        setResetNameMode={setResetNameMode}
+        setResetDNameMode={setResetDNameMode}
+        setResetAddresssMode={setResetAddresssMode}
+        setResetCityMode={setResetCityMode}
+        setResetCountryMode={setResetCountryMode}
+        setResetSTypeMode={setResetSTypeMode}
+        // show|hide country create form or table
+        setShowSupplierTable={setShowSupplierTable}
+        showSupplierCreateForm={showSupplierCreateForm}
+        setShowSupplierCreateForm={setShowSupplierCreateForm}
+      />
+      <SupplierUpdateForm
+        countries={countries}
+        cities={cities}
+        suppliersGetURL={suppliersGetURL}
+        setSuppliers={setSuppliers}
+        selectedUpdateSupplier={selectedUpdateSupplier}
+        supplierUpdateURL={supplierUpdateURL}
+        // showCreateForm={showCreateForm}
+        // setShowCreateForm={setShowCreateForm}
+        setRenderedData={setRenderedData}
+        // validation reset modes
+        resetCodeMode={resetCodeMode}
+        resetNameMode={resetNameMode}
+        resetDNameMode={resetDNameMode}
+        resetAddressMode={resetAddressMode}
+        resetCityMode={resetCityMode}
+        resetCountryMode={resetCountryMode}
+        resetSTypeMode={resetSTypeMode}
+        setResetCodeMode={setResetCodeMode}
+        setResetNameMode={setResetNameMode}
+        setResetDNameMode={setResetDNameMode}
+        setResetAddresssMode={setResetAddresssMode}
+        setResetCityMode={setResetCityMode}
+        setResetCountryMode={setResetCountryMode}
+        setResetSTypeMode={setResetSTypeMode}
+        // show|hide country create form or table
+        setShowSupplierTable={setShowSupplierTable}
+        showSupplierUpdateForm={showSupplierUpdateForm}
+        setShowSupplierUpdateForm={setShowSupplierUpdateForm}
       />
     </div>
   );

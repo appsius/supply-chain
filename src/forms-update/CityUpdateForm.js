@@ -2,23 +2,24 @@ import React, { useState } from 'react';
 import { Form, Field } from 'react-final-form';
 import { TextField, Select } from 'final-form-material-ui';
 import { Paper, Grid, Button, MenuItem } from '@material-ui/core';
-import { createData } from '../helpers';
+import { createData, updateData } from '../helpers';
 
-export default function CityCreateForm({
+export default function CityUpdateForm({
   cities,
   countries,
   setCities,
   citiesGetURL,
-  cityCreateURL,
+  selectedCity,
+  cityUpdateURL,
   resetMode,
   setResetMode,
   setRenderedData,
   // showCreateForm,
   // setShowCreateForm,
-  // show|hide create form or table
+  // show|hide udpdate form
   setShowCityTable,
-  showCityCreateForm,
-  setShowCityCreateForm,
+  showCityUpdateForm,
+  setShowCityUpdateForm,
 }) {
   const [cityAlreadyExist, setCityAlreadyExist] = useState([]);
 
@@ -36,12 +37,13 @@ export default function CityCreateForm({
     return errors;
   };
 
-  const createNewCity = (values) => {
+  const updateCity = (values) => {
     const [cityCountry] = countries.filter((c) => c.name === values.country);
     const { cityName, country } = values;
 
-    if (cityName && country) {
+    if (selectedCity && cityName && country) {
       const newCity = {
+        id: selectedCity.id,
         name: cityName,
         countryId: cityCountry.id,
         country: {
@@ -51,9 +53,9 @@ export default function CityCreateForm({
       };
 
       const body = JSON.stringify(newCity);
-      createData(citiesGetURL, setCities, cityCreateURL, body);
+      updateData(citiesGetURL, setCities, cityUpdateURL, body);
       setCityAlreadyExist([]);
-      setShowCityCreateForm(false);
+      setShowCityUpdateForm(false);
       setShowCityTable(true);
       setRenderedData('cities-rendered');
       console.log(newCity);
@@ -83,13 +85,14 @@ export default function CityCreateForm({
   return (
     <div
       style={{ padding: 16, margin: 'auto', maxWidth: 600 }}
-      className={showCityCreateForm ? 'show' : 'hide'}
+      className={showCityUpdateForm ? 'show' : 'hide'}
     >
-      <div className='City-create Create-form'>
+      <div className='City-update Create-form'>
         <Form
-          onSubmit={(data) => createNewCity(data)}
+          onSubmit={(data) => updateCity(data)}
           validate={validate}
           render={({ form, handleSubmit, submitting }) => (
+            // className='Create-form' ll be removed
             <form onSubmit={handleSubmit} noValidate className='Create-form'>
               <Paper style={{ padding: 16 }}>
                 <Grid container alignItems='flex-start' spacing={8}>
@@ -101,7 +104,7 @@ export default function CityCreateForm({
                       fontWeight: '500',
                     }}
                   >
-                    City Create Form
+                    City Update Form
                   </h2>
                   <Grid
                     item
@@ -132,14 +135,14 @@ export default function CityCreateForm({
                       className='Form-buttons city-form-buttons'
                       variant='contained'
                       type='submit'
-                      disabled={submitting}
                       onClick={() => {
                         setResetMode(false);
-                        !showCityCreateForm && form.reset();
+                        !showCityUpdateForm && form.reset();
                         setTimeout(() => {
                           form.reset();
                         }, 1000);
                       }}
+                      disabled={submitting || cityAlreadyExist.length > 0}
                     >
                       Submit
                     </Button>

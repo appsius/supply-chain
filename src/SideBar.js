@@ -21,6 +21,16 @@ export default function SideBar() {
   const [countries, setCountries] = useState([]);
   const [cities, setCities] = useState([]);
   const [renderedData, setRenderedData] = useState('');
+  // forms shown or not
+  const [showSupplierCreateForm, setShowSupplierCreateForm] = useState(false);
+  const [showSupplierUpdateForm, setShowSupplierUpdateForm] = useState(false);
+  const [showCountryCreateForm, setShowCountryCreateForm] = useState(false);
+  const [showCountryUpdateForm, setShowCountryUpdateForm] = useState(false);
+  const [showCityCreateForm, setShowCityCreateForm] = useState(false);
+  const [showCityUpdateForm, setShowCityUpdateForm] = useState(false);
+  const [showSupplierTable, setShowSupplierTable] = useState(false);
+  const [showCountryTable, setShowCountryTable] = useState(false);
+  const [showCityTable, setShowCityTable] = useState(false);
 
   useEffect(() => {
     getData(suppliersGetURL, setSuppliers);
@@ -28,16 +38,28 @@ export default function SideBar() {
     getData(citiesGetURL, setCities);
   }, []);
 
+  function hideAllForms() {
+    setShowSupplierCreateForm(false);
+    setShowSupplierUpdateForm(false);
+    setShowCountryCreateForm(false);
+    setShowCountryUpdateForm(false);
+    setShowCityCreateForm(false);
+    setShowCityUpdateForm(false);
+  }
+
   function handleClick(dataUrl, setData, popupState, renderedData) {
     popupState.close();
     setLoading(true);
     getData(dataUrl, setData);
-
+    hideAllForms();
     if (renderedData === 'suppliers-rendered') {
+      setShowSupplierTable(true);
       setRenderedData('suppliers-rendered');
     } else if (renderedData === 'countries-rendered') {
+      setShowCountryTable(true);
       setRenderedData('countries-rendered');
     } else if (renderedData === 'cities-rendered') {
+      setShowCityTable(true);
       setRenderedData('cities-rendered');
     }
   }
@@ -113,6 +135,13 @@ export default function SideBar() {
                   citiesGetURL={citiesGetURL}
                   setCities={setCities}
                   setRenderedData={setRenderedData}
+                  // show | hide forms
+                  showSupplierTable={showSupplierTable}
+                  setShowSupplierTable={setShowSupplierTable}
+                  showSupplierCreateForm={showSupplierCreateForm}
+                  setShowSupplierCreateForm={setShowSupplierCreateForm}
+                  showSupplierUpdateForm={showSupplierUpdateForm}
+                  setShowSupplierUpdateForm={setShowSupplierUpdateForm}
                 />
               </div>
             </div>
@@ -125,6 +154,13 @@ export default function SideBar() {
                   countriesGetURL={countriesGetURL}
                   setCountries={setCountries}
                   setRenderedData={setRenderedData}
+                  // show | hide forms
+                  showCountryTable={showCountryTable}
+                  setShowCountryTable={setShowCountryTable}
+                  showCountryCreateForm={showCountryCreateForm}
+                  setShowCountryCreateForm={setShowCountryCreateForm}
+                  showCountryUpdateForm={showCountryUpdateForm}
+                  setShowCountryUpdateForm={setShowCountryUpdateForm}
                 />
               </div>
             </div>
@@ -140,6 +176,13 @@ export default function SideBar() {
                   countriesGetURL={countriesGetURL}
                   setCountries={setCountries}
                   setRenderedData={setRenderedData}
+                  // show | hide forms
+                  showCityTable={showCityTable}
+                  setShowCityTable={setShowCityTable}
+                  showCityCreateForm={showCityCreateForm}
+                  setShowCityCreateForm={setShowCityCreateForm}
+                  showCityUpdateForm={showCityUpdateForm}
+                  setShowCityUpdateForm={setShowCityUpdateForm}
                 />
               </div>
             </div>

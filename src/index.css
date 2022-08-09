@@ -150,7 +150,7 @@ form {
 }
 
 form .MuiPaper-root {
-  width: 100% !important;
+  width: 130% !important;
 }
 
 .Create-form {
@@ -161,12 +161,23 @@ form .MuiPaper-root {
 
 .Supplier-create-form {
   padding: 20px 40px;
-  margin: 0px auto;
+  margin: 0px -50px;
   max-width: 850px;
 }
 
 .Select-country {
   left: 460px !important;
+}
+
+.Form-buttons {
+  color: #fff !important;
+  background-color: #000000 !important;
+  padding: 10px 123px !important;
+}
+
+.city-form-buttons,
+.country-form-buttons {
+  padding: 10px 240px !important;
 }
 
 .show {

@@ -16,21 +16,21 @@ const createData = async (dataURL, setData, createURL, body) => {
     body,
   })
     .then((res) => res.json())
-    .then((data) => console.log(data));
+    .then(() => console.log('Inserted'));
   getData(dataURL, setData);
 };
 
-const updateData = async (dataURL, setData, deleteURL) => {
-  await fetch(deleteURL + id, {
+const updateData = async (dataURL, setData, updateURL, body) => {
+  await fetch(updateURL, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(this.state.singledata),
+    body,
   })
     .then((res) => res.json())
-    .then((result) => {
-      console.log(result);
+    .then(() => {
+      console.log('Updated');
     });
   getData(dataURL, setData);
 };

@@ -1,93 +1,115 @@
 import React, { useState } from 'react';
 import { Form, Field } from 'react-final-form';
-import { OnChange } from 'react-final-form-listeners';
 import { TextField } from 'final-form-material-ui';
 import { Paper, Grid, Button } from '@material-ui/core';
-import { createData, getData } from '../helpers';
-
-const validate = (values) => {
-  const errors = {};
-  if (!values.country) {
-    errors.country = 'Required';
-  }
-  return errors;
-};
+import { createData } from '../helpers';
 
 export default function CountryCreateForm({
+  countries,
   countriesGetURL,
   setCountries,
   countryCreateURL,
-  showCreateForm,
-  setShowCreateForm,
+  resetMode,
+  setResetMode,
   setRenderedData,
+  // show|hide create form or table
+  setShowCountryTable,
+  showCountryCreateForm,
+  setShowCountryCreateForm,
 }) {
+  const validate = (values) => {
+    const errors = {};
+    if (!values.country && resetMode === false) {
+      errors.country = 'Required';
+    }
+    if (countryAlreadyExist.length > 0) {
+      errors.country = 'Country already exist!';
+    }
+    return errors;
+  };
+  const [countryAlreadyExist, setCountryAlreadyExist] = useState('');
+
   const createNewCountry = async (values) => {
     const newCountry = {
       name: values.country,
     };
-    const body = JSON.stringify(newCountry);
+    if (values.country) {
+      const body = JSON.stringify(newCountry);
+      setCountryAlreadyExist([]);
+      createData(countriesGetURL, setCountries, countryCreateURL, body);
+      setShowCountryCreateForm(false);
+      setShowCountryTable(true);
+      setRenderedData('countries-rendered');
+      console.log(newCountry);
+    }
+  };
 
-    createData(countriesGetURL, setCountries, countryCreateURL, body);
-    setShowCreateForm(true);
-    setRenderedData('countries-rendered');
-    console.log(newCountry);
+  const controlCountryExist = (val) => {
+    const sameCountries = countries.filter(
+      (country) =>
+        country.name.trim().toLowerCase() === val.trim().toLowerCase()
+    );
+    setResetMode(false);
+    setCountryAlreadyExist(sameCountries);
   };
 
   return (
     <div
       style={{ padding: 16, margin: 'auto', maxWidth: 600 }}
-      className={'Create-form' && showCreateForm ? 'hide' : 'show'}
+      className={showCountryCreateForm ? 'show' : 'hide'}
     >
-      <Form
-        onSubmit={(data) => createNewCountry(data)}
-        validate={validate}
-        render={({ form, handleSubmit, submitting, pristine, values }) => (
-          <form onSubmit={handleSubmit} noValidate className='Create-form '>
-            <OnChange name='name'>
-              {() => {
-                form.reset({
-                  ...values,
-                  name: '',
-                });
-              }}
-            </OnChange>
-
-            <Paper style={{ padding: 16 }}>
-              <Grid container alignItems='flex-start' spacing={8}>
-                <Grid item xs={12}>
-                  <Field
-                    fullWidth
-                    name='country'
-                    component={TextField}
-                    multiline
-                    label='Country name'
-                  />
-                </Grid>
-                <Grid item style={{ marginTop: 16 }}>
-                  <Button
-                    type='button'
-                    variant='contained'
-                    onClick={form.reset}
-                    disabled={submitting || pristine}
+      <div className='Country-create Create-form'>
+        <Form
+          onSubmit={(data) => createNewCountry(data)}
+          validate={validate}
+          render={({ form, handleSubmit, submitting }) => (
+            <form onSubmit={handleSubmit} noValidate className='Create-form '>
+              <Paper style={{ padding: 16 }}>
+                <Grid container alignItems='flex-start' spacing={8}>
+                  <h2
+                    style={{
+                      margin: '10px auto 0 35px',
+                      paddingTop: '25px',
+                      paddingBottom: '10px',
+                      fontWeight: '500',
+                    }}
                   >
-                    Reset
-                  </Button>
-                </Grid>
-                <Grid item style={{ marginTop: 16 }}>
-                  <Button
-                    type='submit'
-                    variant='contained'
-                    color='primary'
-                    disabled={submitting}
+                    Country Create Form
+                  </h2>
+                  <Grid
+                    item
+                    xs={12}
+                    onChange={(e) => controlCountryExist(e.target.value)}
                   >
-                    Submit
-                  </Button>
+                    <Field
+                      fullWidth
+                      name='country'
+                      component={TextField}
+                      label='Country name'
+                    />
+                  </Grid>
+                  <Grid item style={{ marginTop: 16 }}>
+                    <Button
+                      className='Form-buttons country-form-buttons'
+                      type='submit'
+                      variant='contained'
+                      onClick={() => {
+                        setResetMode(false);
+                        setTimeout(() => {
+                          form.reset();
+                        }, 1000);
+                      }}
+                      disabled={submitting || countryAlreadyExist.length > 0}
+                    >
+                      Submit
+                    </Button>
+                  </Grid>
                 </Grid>
-              </Grid>
-            </Paper>
-          </form>
-        )}
-      />
+              </Paper>
+            </form>
+          )}
+        />
+      </div>
     </div>
   );
 }

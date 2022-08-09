@@ -8,7 +8,8 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
-import { getData, deleteData } from './helpers';
+import { deleteData } from './helpers';
+import CountryUpdateForm from './forms-update/CountryUpdateForm';
 import CountryCreateForm from './forms-create/CountryCreateForm';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -30,31 +31,53 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function CountriesTable({
+  countries,
   countriesGetURL,
   setCountries,
-  countries,
   setRenderedData,
+  // show|hide forms or table
+  showCountryTable,
+  setShowCountryTable,
+  showCountryCreateForm,
+  setShowCountryCreateForm,
+  showCountryUpdateForm,
+  setShowCountryUpdateForm,
 }) {
-  const [showCreateForm, setShowCreateForm] = useState(true);
   const countryCreateURL =
     'http://45.130.15.52:6501/api/services/app/Country/Create';
-  const countryUpdateURL = `http://45.130.15.52:6501/api/services/app/Country/Update?Id=`;
+  const countryUpdateURL = `http://45.130.15.52:6501/api/services/app/City/Update`;
   const countryDeleteURL = `http://45.130.15.52:6501/api/services/app/Country/Delete?Id=`;
+  const [selectedCountry, setSelectedCountry] = useState({});
+  const [resetMode, setResetMode] = useState(true);
+
+  function handleShowCreateForm() {
+    setResetMode(true);
+    // hide-show table and forms
+    setShowCountryTable(false);
+    setShowCountryUpdateForm(false);
+    setShowCountryCreateForm(true);
+  }
+
+  function handleCountryUpdate(country) {
+    setSelectedCountry(country);
+    setResetMode(true);
+    // hide-show table and forms
+    setShowCountryTable(false);
+    setShowCountryCreateForm(false);
+    setShowCountryUpdateForm(true);
+  }
 
   function handleCountryDelete(id) {
     deleteData(countriesGetURL, setCountries, countryDeleteURL + id);
+    setShowCountryTable(true);
     setRenderedData('countries-rendered');
-  }
-
-  function handleShowCreateForm() {
-    setShowCreateForm(false);
   }
 
   return (
     <div>
       <TableContainer
         component={Paper}
-        className={showCreateForm ? 'show' : 'hide'}
+        className={showCountryTable ? 'show' : 'hide'}
       >
         <Table sx={{ minWidth: 700 }} aria-label='customized table'>
           <TableHead>
@@ -74,38 +97,64 @@ export default function CountriesTable({
             </TableRow>
           </TableHead>
           <TableBody>
-            {countries.map((country) => (
-              <StyledTableRow key={country.id}>
-                <StyledTableCell align='left' className='Country-id'>
-                  {country.id}
-                </StyledTableCell>
-                <StyledTableCell align='center'>{country.name}</StyledTableCell>
-                <StyledTableCell align='right' className='Buttons'>
-                  <Button className='Button Update-button' variant='contained'>
-                    UPDATE
-                  </Button>
-                  <Button
-                    className='Button Delete-button'
-                    variant='contained'
-                    color='error'
-                    id={country.id}
-                    onClick={(e) => handleCountryDelete(e.target.id)}
-                  >
-                    DELETE
-                  </Button>
-                </StyledTableCell>
-              </StyledTableRow>
-            ))}
+            {countries.map((country) => {
+              const { id, name } = country;
+              return (
+                <StyledTableRow key={id}>
+                  <StyledTableCell align='left' className='Country-id'>
+                    {id}
+                  </StyledTableCell>
+                  <StyledTableCell align='center'>{name}</StyledTableCell>
+                  <StyledTableCell align='right' className='Buttons'>
+                    <Button
+                      className='Button Update-button'
+                      variant='contained'
+                      onClick={() => handleCountryUpdate(country)}
+                    >
+                      UPDATE
+                    </Button>
+                    <Button
+                      className='Button Delete-button'
+                      variant='contained'
+                      color='error'
+                      id={id}
+                      onClick={(e) => handleCountryDelete(e.target.id)}
+                    >
+                      DELETE
+                    </Button>
+                  </StyledTableCell>
+                </StyledTableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </TableContainer>
       <CountryCreateForm
+        countries={countries}
         countriesGetURL={countriesGetURL}
         setCountries={setCountries}
         countryCreateURL={countryCreateURL}
-        showCreateForm={showCreateForm}
-        setShowCreateForm={setShowCreateForm}
+        resetMode={resetMode}
+        setResetMode={setResetMode}
         setRenderedData={setRenderedData}
+        // show|hide country create form or table
+        setShowCountryTable={setShowCountryTable}
+        showCountryCreateForm={showCountryCreateForm}
+        setShowCountryCreateForm={setShowCountryCreateForm}
+      />
+      <CountryUpdateForm
+        countries={countries}
+        countriesGetURL={countriesGetURL}
+        setCountries={setCountries}
+        selectedCountry={selectedCountry}
+        countryUpdateURL={countryUpdateURL}
+        resetMode={resetMode}
+        setResetMode={setResetMode}
+        setRenderedData={setRenderedData}
+        // show|hide country update form or table
+        setShowCountryTable={setShowCountryTable}
+        showCountryUpdateForm={showCountryUpdateForm}
+        setShowCountryUpdateForm={setShowCountryUpdateForm}
       />
     </div>
   );
