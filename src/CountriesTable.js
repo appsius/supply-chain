@@ -45,9 +45,12 @@ export default function CountriesTable({
 }) {
   const countryCreateURL =
     'http://45.130.15.52:6501/api/services/app/Country/Create';
-  const countryUpdateURL = `http://45.130.15.52:6501/api/services/app/City/Update`;
-  const countryDeleteURL = `http://45.130.15.52:6501/api/services/app/Country/Delete?Id=`;
+  const countryUpdateURL =
+    'http://45.130.15.52:6501/api/services/app/Country/Update';
+  const countryDeleteURL =
+    'http://45.130.15.52:6501/api/services/app/Country/Delete?Id=';
   const [selectedCountry, setSelectedCountry] = useState({});
+  const [selectedCountryName, setSelectedCountryName] = useState('');
   const [resetMode, setResetMode] = useState(true);
 
   function handleShowCreateForm() {
@@ -60,6 +63,7 @@ export default function CountriesTable({
 
   function handleCountryUpdate(country) {
     setSelectedCountry(country);
+    setSelectedCountryName(country.name);
     setResetMode(true);
     // hide-show table and forms
     setShowCountryTable(false);
@@ -147,6 +151,9 @@ export default function CountriesTable({
         countriesGetURL={countriesGetURL}
         setCountries={setCountries}
         selectedCountry={selectedCountry}
+        setSelectedCountry={setSelectedCountry}
+        selectedCountryName={selectedCountryName}
+        setSelectedCountryName={setSelectedCountryName}
         countryUpdateURL={countryUpdateURL}
         resetMode={resetMode}
         setResetMode={setResetMode}

@@ -218,11 +218,9 @@ export default function SupplierUpdateForm({
     setResetDNameMode(false);
   };
   const handleAdressResetMode = () => {
-    console.log(resetAddressMode);
     setResetAddresssMode(false);
   };
   const handleCityResetMode = () => {
-    console.log(resetCityMode);
     setResetCityMode(false);
   };
   const handleCountryResetMode = () => {

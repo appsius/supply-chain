@@ -53,8 +53,10 @@ export default function SuppliersTable({
 }) {
   const supplierCreateURL =
     'http://45.130.15.52:6501/api/services/app/Supplier/Create';
-  const supplierUpdateURL = `http://45.130.15.52:6501/api/services/app/Supplier/Update`;
-  const supplierDeleteURL = `http://45.130.15.52:6501/api/services/app/Supplier/Delete?Id=`;
+  const supplierUpdateURL =
+    'http://45.130.15.52:6501/api/services/app/Supplier/Update';
+  const supplierDeleteURL =
+    'http://45.130.15.52:6501/api/services/app/Supplier/Delete?Id=';
   const [selectedUpdateSupplier, setSelectedUpdateSupplier] = useState({});
 
   // validation reset controllers

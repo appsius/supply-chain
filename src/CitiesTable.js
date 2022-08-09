@@ -49,8 +49,9 @@ export default function CitiesTable({
   setShowCityUpdateForm,
 }) {
   const cityCreateURL = 'http://45.130.15.52:6501/api/services/app/City/Create';
-  const cityUpdateURL = `http://45.130.15.52:6501/api/services/app/City/Update`;
-  const cityDeleteURL = `http://45.130.15.52:6501/api/services/app/City/Delete?Id=`;
+  const cityUpdateURL = 'http://45.130.15.52:6501/api/services/app/City/Update';
+  const cityDeleteURL =
+    'http://45.130.15.52:6501/api/services/app/City/Delete?Id=';
   const [selectedCity, setSelectedCity] = useState({});
   const [resetMode, setResetMode] = useState(true);
 

@@ -9,6 +9,9 @@ export default function CountryUpdateForm({
   countriesGetURL,
   setCountries,
   selectedCountry,
+  setSelectedCountry,
+  selectedCountryName,
+  setSelectedCountryName,
   countryUpdateURL,
   resetMode,
   setResetMode,
@@ -18,15 +21,13 @@ export default function CountryUpdateForm({
   showCountryUpdateForm,
   setShowCountryUpdateForm,
 }) {
+  console.log(selectedCountryName);
   const validate = (values) => {
     const errors = {};
     if (!values.country && resetMode === false) {
       errors.country = 'Required';
     }
-    if (
-      countryAlreadyExist.length > 0 &&
-      selectedCountry.id === countryAlreadyExist.id
-    ) {
+    if (countryAlreadyExist.length > 1) {
       errors.country = 'Country already exist!';
     }
     return errors;
@@ -50,12 +51,14 @@ export default function CountryUpdateForm({
     }
   };
 
-  const controlCountryExist = (val) => {
+  const controlUpdateCountryExist = (val) => {
+    console.log(val, countries, selectedCountry);
     const sameCountries = countries.filter(
       (country) =>
         country.name.trim().toLowerCase() === val.trim().toLowerCase()
     );
     setResetMode(false);
+    setSelectedCountryName('');
     setCountryAlreadyExist(sameCountries);
   };
 
@@ -68,7 +71,7 @@ export default function CountryUpdateForm({
         <Form
           onSubmit={(data) => updateCountry(data)}
           validate={validate}
-          render={({ form, handleSubmit, submitting, pristine, values }) => (
+          render={({ form, handleSubmit, submitting }) => (
             <form onSubmit={handleSubmit} noValidate className='Create-form '>
               <Paper style={{ padding: 16 }}>
                 <Grid container alignItems='flex-start' spacing={8}>
@@ -85,14 +88,17 @@ export default function CountryUpdateForm({
                   <Grid
                     item
                     xs={12}
-                    onChange={(e) => controlCountryExist(e.target.value)}
+                    onChange={(e) => controlUpdateCountryExist(e.target.value)}
                   >
                     <Field
                       fullWidth
                       name='country'
                       component={TextField}
-                      multiline
-                      label='Country name'
+                      label={
+                        selectedCountryName
+                          ? selectedCountryName
+                          : 'Country name'
+                      }
                     />
                   </Grid>
                   <Grid item style={{ marginTop: 16 }}>
@@ -106,11 +112,7 @@ export default function CountryUpdateForm({
                           form.reset();
                         }, 1000);
                       }}
-                      disabled={
-                        submitting ||
-                        (countryAlreadyExist.length > 0 &&
-                          selectedCountry.id === countryAlreadyExist)
-                      }
+                      disabled={submitting}
                     >
                       Submit
                     </Button>
