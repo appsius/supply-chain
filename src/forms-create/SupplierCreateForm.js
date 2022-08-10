@@ -130,6 +130,41 @@ export default function SupplierCreateForm({
     setSelectedSupplierType(filteredSupplierType);
   };
 
+  // resetting validation for supplier after submit
+  const handleCodeResetMode = () => {
+    setResetCodeMode(false);
+  };
+  const handleNameResetMode = () => {
+    setResetNameMode(false);
+  };
+  const handleDisplayNameResetMode = () => {
+    setResetDNameMode(false);
+  };
+  const handleAdressResetMode = () => {
+    setResetAddresssMode(false);
+  };
+  const handleCityResetMode = () => {
+    setResetCityMode(false);
+  };
+  const handleCountryResetMode = () => {
+    setResetCountryMode(false);
+  };
+  const handleSupplierTypeResetMode = () => {
+    setResetSTypeMode(false);
+  };
+
+  const handleCancelButton = () => {
+    // reset update data
+    setSelectedCity({});
+    setSelectedCountry({});
+    setSelectedCities([]);
+    setSelectedSupplierType({});
+    // show supplier table
+    setShowSupplierCreateForm(false);
+    setShowSupplierTable(true);
+    setRenderedData('suppliers-rendered');
+  };
+
   const getCitiesMenu = () => {
     if (selectedCities.length > 0) {
       return selectedCities.map((sCity) => {
@@ -205,29 +240,6 @@ export default function SupplierCreateForm({
         </MenuItem>
       );
     });
-  };
-
-  // resetting validation for supplier after submit
-  const handleCodeResetMode = () => {
-    setResetCodeMode(false);
-  };
-  const handleNameResetMode = () => {
-    setResetNameMode(false);
-  };
-  const handleDisplayNameResetMode = () => {
-    setResetDNameMode(false);
-  };
-  const handleAdressResetMode = () => {
-    setResetAddresssMode(false);
-  };
-  const handleCityResetMode = () => {
-    setResetCityMode(false);
-  };
-  const handleCountryResetMode = () => {
-    setResetCountryMode(false);
-  };
-  const handleSupplierTypeResetMode = () => {
-    setResetSTypeMode(false);
   };
 
   return (
@@ -320,7 +332,7 @@ export default function SupplierCreateForm({
                       {getCountriesMenu()}
                     </Field>
                   </Grid>
-                  <Grid item xs={6} className='Select-supplier-type'>
+                  <Grid item xs={12} className='Select-supplier-type'>
                     <Field
                       fullWidth
                       name='selectedSupplierTypeName'
@@ -332,7 +344,26 @@ export default function SupplierCreateForm({
                       {getSupplierTypesMenu()}
                     </Field>
                   </Grid>
-                  <Grid item style={{ marginTop: 16 }}>
+                  <Grid
+                    item
+                    style={{ marginTop: 16 }}
+                    xs={12}
+                    className='Buttons'
+                  >
+                    <Button
+                      className='Form-buttons Supplier-cancel-button'
+                      variant='contained'
+                      type='cancel'
+                      onClick={() => {
+                        handleCancelButton();
+                        setTimeout(() => {
+                          form.reset();
+                        }, 1000);
+                      }}
+                      disabled={submitting}
+                    >
+                      Cancel
+                    </Button>
                     <Button
                       className='Form-buttons'
                       variant='contained'

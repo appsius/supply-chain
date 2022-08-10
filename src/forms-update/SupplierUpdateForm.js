@@ -266,13 +266,17 @@ export default function SupplierUpdateForm({
   };
 
   const handleCancelButton = () => {
-    // reset update data
+    // reset update initial data
     setUpdatedSupplierCity({});
     setUpdatedSupplierCountry({});
     setUpdatedSupplierSType({});
     setSelectedUpdateSupplier({});
-    //
+    // reset update later data
     setSelectedCities([]);
+    setSelectedCity({});
+    setSelectedCountry({});
+    setSelectedSupplierType({});
+    //
     setShowSupplierUpdateForm(false);
     setShowSupplierTable(true);
     setRenderedData('suppliers-rendered');
@@ -406,9 +410,14 @@ export default function SupplierUpdateForm({
                       {getSupplierTypesMenu()}
                     </Field>
                   </Grid>
-                  <Grid item xs={12} style={{ marginTop: 16 }}>
+                  <Grid
+                    item
+                    style={{ marginTop: 16 }}
+                    xs={12}
+                    className='Buttons'
+                  >
                     <Button
-                      className='Form-buttons Cancel-button'
+                      className='Form-buttons Supplier-cancel-button'
                       variant='contained'
                       type='cancel'
                       onClick={() => {

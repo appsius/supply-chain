@@ -184,15 +184,23 @@ form .MuiPaper-root {
   left: 460px !important;
 }
 
+.Buttons {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
 .Form-buttons {
   color: #fff !important;
   background-color: #000000 !important;
   padding: 10px 123px !important;
 }
 
-.Cancel-button {
+.Supplier-cancel-button {
   background-color: rgb(255, 42, 42) !important;
   margin-right: 20px !important;
+  padding: 10px 145px !important;
 }
 
 .city-form-buttons,
