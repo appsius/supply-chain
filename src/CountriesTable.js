@@ -55,6 +55,7 @@ export default function CountriesTable({
   const [selectedCountryName, setSelectedCountryName] = useState('');
   const [resetMode, setResetMode] = useState(true);
   const [showAlert, setShowAlert] = useState(false);
+  const [alertCountryName, setAlertCountryName] = useState('');
 
   function handleShowCreateForm() {
     setResetMode(true);
@@ -74,12 +75,14 @@ export default function CountriesTable({
     setShowCountryUpdateForm(true);
   }
 
-  function handleCountryDelete(id) {
+  function handleCountryDelete(country) {
+    const { id, name } = country;
     const citiesOfCountry = cities.filter(
       (city) => city.countryId === Number(id)
     );
     if (citiesOfCountry.length > 0) {
       // set alert to not delete country/has city
+      setAlertCountryName(name);
       setShowAlert(true);
       setTimeout(() => {
         setShowAlert(false);
@@ -114,7 +117,7 @@ export default function CountriesTable({
             fontFamily: 'Roboto',
           }}
         >
-          Country has cities, delete them first!
+          {alertCountryName} has cities, update|delete them first!
         </Alert>
       )}
       <TableContainer
@@ -160,7 +163,7 @@ export default function CountriesTable({
                       variant='contained'
                       color='error'
                       id={id}
-                      onClick={(e) => handleCountryDelete(e.target.id)}
+                      onClick={() => handleCountryDelete(country)}
                     >
                       DELETE
                     </Button>

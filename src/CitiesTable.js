@@ -7,7 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Button } from '@mui/material';
+import { Alert, Button } from '@mui/material';
 import { deleteData } from './helpers';
 import CityCreateForm from './forms-create/CityCreateForm';
 import CityUpdateForm from './forms-update/CityUpdateForm';
@@ -33,8 +33,10 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function CitiesTable({
+  // city data
   cities,
   countries,
+  suppliers,
   citiesGetURL,
   setCities,
   countriesGetURL,
@@ -59,6 +61,8 @@ export default function CitiesTable({
   const [selectedCityCountryName, setSelectedCityCountryName] = useState('');
   const [cityResetMode, setCityResetMode] = useState(false);
   const [resetMode, setResetMode] = useState(true);
+  const [showAlert, setShowAlert] = useState(false);
+  const [alertCityName, setAlertCityName] = useState('');
 
   function openCityForm() {
     setResetMode(true);
@@ -87,14 +91,52 @@ export default function CitiesTable({
     setShowCityUpdateForm(true);
   }
 
-  function handleCityDelete(id) {
-    deleteData(citiesGetURL, setCities, cityDeleteURL + id);
-    setShowCityTable(true);
-    setRenderedData('cities-rendered');
+  function handleCityDelete(city) {
+    const { id, name } = city;
+    const supplierCity = suppliers.filter(
+      (supplier) => supplier.city && supplier.city.name === city.name
+    );
+    console.log(supplierCity);
+    if (supplierCity.length > 0) {
+      // Alert - donot delete city if has suppliers
+      setAlertCityName(name);
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
+    } else {
+      deleteData(citiesGetURL, setCities, cityDeleteURL + id);
+      setShowCityTable(true);
+      setRenderedData('cities-rendered');
+    }
   }
 
   return (
-    <div>
+    <div style={{ position: 'relative' }}>
+      {showAlert && (
+        <Alert
+          variant='filled'
+          severity='error'
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            position: 'absolute',
+            left: '45%',
+            top: '-4.5vh',
+            transform: 'translate(-50%, -50%)',
+            width: '80vw',
+            height: '5.5vh',
+            borderRadius: 0,
+            backgroundColor: 'red',
+            color: 'white',
+            fontSize: '1.65rem',
+            fontWeight: 'bold',
+            fontFamily: 'Roboto',
+          }}
+        >
+          {alertCityName} has suppliers, update|delete them first!
+        </Alert>
+      )}
       <TableContainer
         component={Paper}
         className={showCityTable ? 'show' : 'hide'}
@@ -142,7 +184,7 @@ export default function CitiesTable({
                       variant='contained'
                       color='error'
                       id={city.id}
-                      onClick={(e) => handleCityDelete(e.target.id)}
+                      onClick={() => handleCityDelete(city)}
                     >
                       DELETE
                     </Button>

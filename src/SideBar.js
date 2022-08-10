@@ -191,6 +191,7 @@ export default function SideBar() {
                 <CitiesTable
                   cities={cities}
                   countries={countries}
+                  suppliers={suppliers}
                   citiesGetURL={citiesGetURL}
                   setCities={setCities}
                   countriesGetURL={countriesGetURL}
