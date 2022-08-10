@@ -356,9 +356,7 @@ export default function SupplierCreateForm({
                       type='cancel'
                       onClick={() => {
                         handleCancelButton();
-                        setTimeout(() => {
-                          form.reset();
-                        }, 1000);
+                        form.reset();
                       }}
                       disabled={submitting}
                     >

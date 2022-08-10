@@ -57,6 +57,7 @@ export default function CitiesTable({
   const [selectedCity, setSelectedCity] = useState({});
   const [selectedCityName, setSelectedCityName] = useState('');
   const [selectedCityCountryName, setSelectedCityCountryName] = useState('');
+  const [cityResetMode, setCityResetMode] = useState(false);
   const [resetMode, setResetMode] = useState(true);
 
   function openCityForm() {
@@ -68,14 +69,18 @@ export default function CitiesTable({
   }
 
   function handleCityUpdate(city) {
+    setSelectedCity({});
+    setSelectedCityName('');
+    setSelectedCityCountryName('');
     const countryOfCity = countries.filter(
       (country) => country.id === city.countryId
     );
-    // selected city data for filling labels
+    // selected city data
     setSelectedCity(city);
     setSelectedCityName(city.name);
     setSelectedCityCountryName(countryOfCity[0].name);
     setResetMode(true);
+    setCityResetMode(true);
     // hide-show table and forms
     setShowCityTable(false);
     setShowCityCreateForm(false);
@@ -113,33 +118,38 @@ export default function CitiesTable({
             </TableRow>
           </TableHead>
           <TableBody>
-            {cities.map((city) => (
-              <StyledTableRow key={city.id}>
-                <StyledTableCell>{city.id}</StyledTableCell>
-                <StyledTableCell align='center'>{city.name}</StyledTableCell>
-                <StyledTableCell align='center'>
-                  {city.country ? city.country.name : 'Name-Not-Found!'}
-                </StyledTableCell>
-                <StyledTableCell align='right' className='Buttons'>
-                  <Button
-                    className='Button Update-button'
-                    variant='contained'
-                    onClick={() => handleCityUpdate(city)}
-                  >
-                    UPDATE
-                  </Button>
-                  <Button
-                    className='Button Delete-button'
-                    variant='contained'
-                    color='error'
-                    id={city.id}
-                    onClick={(e) => handleCityDelete(e.target.id)}
-                  >
-                    DELETE
-                  </Button>
-                </StyledTableCell>
-              </StyledTableRow>
-            ))}
+            {cities.map((city) => {
+              if (!city.id) return;
+              if (!city.name) return;
+              if (!city.countryId) return;
+              return (
+                <StyledTableRow key={city.id}>
+                  <StyledTableCell>{city.id}</StyledTableCell>
+                  <StyledTableCell align='center'>{city.name}</StyledTableCell>
+                  <StyledTableCell align='center'>
+                    {city.country ? city.country.name : 'Name-Not-Found!'}
+                  </StyledTableCell>
+                  <StyledTableCell align='right' className='Buttons'>
+                    <Button
+                      className='Button Update-button'
+                      variant='contained'
+                      onClick={() => handleCityUpdate(city)}
+                    >
+                      UPDATE
+                    </Button>
+                    <Button
+                      className='Button Delete-button'
+                      variant='contained'
+                      color='error'
+                      id={city.id}
+                      onClick={(e) => handleCityDelete(e.target.id)}
+                    >
+                      DELETE
+                    </Button>
+                  </StyledTableCell>
+                </StyledTableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </TableContainer>
@@ -175,6 +185,8 @@ export default function CitiesTable({
         cityUpdateURL={cityUpdateURL}
         resetMode={resetMode}
         setResetMode={setResetMode}
+        cityResetMode={cityResetMode}
+        setCityResetMode={setCityResetMode}
         setRenderedData={setRenderedData}
         // show | hide forms
         setShowCityTable={setShowCityTable}

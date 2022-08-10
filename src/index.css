@@ -203,9 +203,15 @@ form .MuiPaper-root {
   padding: 10px 145px !important;
 }
 
+.City-cancel-button {
+  background-color: rgb(255, 42, 42) !important;
+  margin-right: 20px !important;
+  padding: 10px 130px !important;
+}
+
 .city-form-buttons,
 .country-form-buttons {
-  padding: 10px 240px !important;
+  padding: 10px 130px !important;
 }
 
 .show {

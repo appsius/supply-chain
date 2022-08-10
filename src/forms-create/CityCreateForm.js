@@ -72,6 +72,15 @@ export default function CityCreateForm({
     setResetMode(false);
   };
 
+  const handleCancelButton = () => {
+    // reset update data
+    setCityAlreadyExist([]);
+    // show supplier table
+    setShowCityCreateForm(false);
+    setShowCityTable(true);
+    setRenderedData('cities-rendered');
+  };
+
   const getCountriesMenu = () => {
     return countries.map((country) => (
       <MenuItem key={country.id} value={country.name}>
@@ -127,7 +136,24 @@ export default function CityCreateForm({
                       {getCountriesMenu()}
                     </Field>
                   </Grid>
-                  <Grid item style={{ marginTop: 16 }}>
+                  <Grid
+                    item
+                    style={{ marginTop: 16 }}
+                    xs={12}
+                    className='Buttons'
+                  >
+                    <Button
+                      className='Form-buttons City-cancel-button'
+                      variant='contained'
+                      type='cancel'
+                      onClick={() => {
+                        handleCancelButton();
+                        form.reset();
+                      }}
+                      disabled={submitting}
+                    >
+                      Cancel
+                    </Button>
                     <Button
                       className='Form-buttons city-form-buttons'
                       variant='contained'

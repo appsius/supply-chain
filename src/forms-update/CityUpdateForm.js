@@ -5,10 +5,12 @@ import { Paper, Grid, Button, MenuItem } from '@material-ui/core';
 import { updateData } from '../helpers';
 
 export default function CityUpdateForm({
+  // city data
   cities,
   countries,
   setCities,
   citiesGetURL,
+  cityUpdateURL,
   // selected city data for filling labels
   selectedCity,
   setSelectedCity,
@@ -17,24 +19,25 @@ export default function CityUpdateForm({
   selectedCityCountryName,
   setSelectedCityCountryName,
   //
-  cityUpdateURL,
   resetMode,
   setResetMode,
-  setRenderedData,
+  cityResetMode,
+  setCityResetMode,
   // show|hide udpdate form
   setShowCityTable,
   showCityUpdateForm,
   setShowCityUpdateForm,
+  setRenderedData,
 }) {
-  const [cityAlreadyExist, setCityAlreadyExist] = useState([]);
+  const [cityAlreadyExist, setCityAlreadyExist] = useState(false);
 
   const validate = (values) => {
     const errors = {};
-    if (!values.cityName && resetMode === false) {
+    if (!values.cityName && cityResetMode === false) {
       errors.cityName = 'Required';
     }
-    if (cityAlreadyExist.length > 0) {
-      errors.cityName = 'Cty already exist!';
+    if (cityAlreadyExist) {
+      errors.cityName = 'City already exist!';
     }
     if (!values.country && resetMode === false) {
       errors.country = 'Required';
@@ -43,30 +46,30 @@ export default function CityUpdateForm({
   };
 
   const updateCity = (values) => {
-    values.cityName === '' && (values.cityName = selectedCity.name);
-    values.country === '' && (values.country = selectedCity.country.name);
-    const [cityCountry] = countries.filter((c) => c.name === values.country);
-    const { cityName, country } = values;
+    const { cityName } = values;
+    const [countryOfCity] = countries.filter(
+      (c) => c.name === selectedCityCountryName
+    );
+    const { id, name } = countryOfCity;
+    const newCity = {
+      id: selectedCity.id,
+      name: selectedCityName ? selectedCityName : cityName,
+      countryId: id,
+      country: {
+        name,
+        id,
+      },
+    };
 
-    if (cityName && country) {
-      const newCity = {
-        id: selectedCity.id,
-        name: cityName,
-        countryId: cityCountry.id,
-        country: {
-          name: country,
-          id: cityCountry.id,
-        },
-      };
-
+    if (newCity.id && newCity.name && newCity.countryId) {
       const body = JSON.stringify(newCity);
       updateData(citiesGetURL, setCities, cityUpdateURL, body);
-      setCityAlreadyExist([]);
+      setCityAlreadyExist(false);
       setSelectedCity({});
       setShowCityUpdateForm(false);
       setShowCityTable(true);
       setRenderedData('cities-rendered');
-      console.log(newCity);
+      // console.log(newCity);
     }
   };
 
@@ -74,25 +77,49 @@ export default function CityUpdateForm({
     const sameCities = cities.filter(
       (city) => city.name.trim().toLowerCase() === val.trim().toLowerCase()
     );
-    setResetMode(false);
-    setSelectedCityName('');
-    setCityAlreadyExist(sameCities);
+
+    console.log(sameCities);
+
+    // console.log(sameCities[0].name !== val && sameCities.length > 0);
+    if (val !== selectedCityName && sameCities.length > 0) {
+      setCityAlreadyExist(true);
+    }
+    setSelectedCityName(val);
+  };
+
+  const handleCityClick = () => {
+    setCityResetMode(false);
+  };
+
+  const handleCountryClick = (country) => {
+    setSelectedCityCountryName(country.name);
   };
 
   const handleCountriesSelect = () => {
     setResetMode(false);
-    setSelectedCityCountryName('');
+  };
+
+  const handleCancelButton = () => {
+    // reset update data
+    setCityAlreadyExist(false);
+    setSelectedCity({});
+    // show supplier table
+    setShowCityUpdateForm(false);
+    setShowCityTable(true);
+    setRenderedData('cities-rendered');
   };
 
   const getCountriesMenu = () => {
     return countries.map((country) => (
-      <MenuItem key={country.id} value={country.name}>
+      <MenuItem
+        key={country.id}
+        value={country.name}
+        onClick={() => handleCountryClick(country)}
+      >
         {country.name}
       </MenuItem>
     ));
   };
-
-  console.log(selectedCityCountryName);
 
   return (
     <div
@@ -126,7 +153,8 @@ export default function CityUpdateForm({
                       fullWidth
                       name='cityName'
                       component={TextField}
-                      label={selectedCityName ? selectedCityName : 'City name'}
+                      label={cityResetMode ? selectedCityName : 'City name'}
+                      onClick={() => handleCityClick()}
                     />
                   </Grid>
                   <Grid item xs={12} className='Select-country'>
@@ -135,9 +163,7 @@ export default function CityUpdateForm({
                       name='country'
                       component={Select}
                       label={
-                        selectedCityCountryName
-                          ? selectedCityCountryName
-                          : 'Select a Country'
+                        resetMode ? selectedCityCountryName : 'Select a Country'
                       }
                       onClick={() => handleCountriesSelect()}
                       formControlProps={{ fullWidth: true }}
@@ -145,7 +171,24 @@ export default function CityUpdateForm({
                       {getCountriesMenu()}
                     </Field>
                   </Grid>
-                  <Grid item style={{ marginTop: 16 }}>
+                  <Grid
+                    item
+                    style={{ marginTop: 16 }}
+                    xs={12}
+                    className='Buttons'
+                  >
+                    <Button
+                      className='Form-buttons City-cancel-button'
+                      variant='contained'
+                      type='cancel'
+                      onClick={() => {
+                        handleCancelButton();
+                        form.reset();
+                      }}
+                      disabled={submitting}
+                    >
+                      Cancel
+                    </Button>
                     <Button
                       className='Form-buttons city-form-buttons'
                       variant='contained'
@@ -157,7 +200,7 @@ export default function CityUpdateForm({
                           form.reset();
                         }, 1000);
                       }}
-                      disabled={submitting || cityAlreadyExist.length > 0}
+                      disabled={submitting}
                     >
                       Submit
                     </Button>
