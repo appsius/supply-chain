@@ -43,8 +43,8 @@ export default function CountryUpdateForm({
 
     if (values.country) {
       const body = JSON.stringify(updatedCountry);
-      setCountryAlreadyExist([]);
       updateData(countriesGetURL, setCountries, countryUpdateURL, body);
+      setCountryAlreadyExist([]);
       setSelectedCountry({});
       setShowCountryUpdateForm(false);
       setShowCountryTable(true);
@@ -62,6 +62,16 @@ export default function CountryUpdateForm({
     setResetMode(false);
     setSelectedCountryName('');
     setCountryAlreadyExist(sameCountries);
+  };
+
+  const handleCancelButton = () => {
+    // reset update data
+    setCountryAlreadyExist([]);
+    setSelectedCountry({});
+    // show supplier table
+    setShowCountryUpdateForm(false);
+    setShowCountryTable(true);
+    setRenderedData('countries-rendered');
   };
 
   return (
@@ -103,7 +113,24 @@ export default function CountryUpdateForm({
                       }
                     />
                   </Grid>
-                  <Grid item style={{ marginTop: 16 }}>
+                  <Grid
+                    item
+                    style={{ marginTop: 16 }}
+                    xs={12}
+                    className='Buttons'
+                  >
+                    <Button
+                      className='Form-buttons City-cancel-button'
+                      variant='contained'
+                      type='cancel'
+                      onClick={() => {
+                        handleCancelButton();
+                        form.reset();
+                      }}
+                      disabled={submitting}
+                    >
+                      Cancel
+                    </Button>
                     <Button
                       className='Form-buttons country-form-buttons'
                       type='submit'

@@ -48,9 +48,6 @@ export default function SupplierUpdateForm({
   setShowSupplierUpdateForm,
   setRenderedData,
 }) {
-  console.log(updatedSupplierCity);
-  console.log(updatedSupplierCountry);
-  console.log(updatedSupplierSType);
   const validate = (values) => {
     const errors = {};
     if (!values.code && resetCodeMode === false) {
@@ -104,8 +101,6 @@ export default function SupplierUpdateForm({
         : updatedSupplierSType.id,
     };
 
-    console.log(updatedSupplier);
-
     if (
       updatedSupplier.code &&
       updatedSupplier.name &&
@@ -131,7 +126,7 @@ export default function SupplierUpdateForm({
       setShowSupplierUpdateForm(false);
       setShowSupplierTable(true);
       setRenderedData('suppliers-rendered');
-      // console.log(updatedSupplier);
+      console.log(updatedSupplier);
     }
   };
 

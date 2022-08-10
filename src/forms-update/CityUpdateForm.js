@@ -69,7 +69,7 @@ export default function CityUpdateForm({
       setShowCityUpdateForm(false);
       setShowCityTable(true);
       setRenderedData('cities-rendered');
-      // console.log(newCity);
+      console.log(newCity);
     }
   };
 
@@ -78,10 +78,7 @@ export default function CityUpdateForm({
       (city) => city.name.trim().toLowerCase() === val.trim().toLowerCase()
     );
 
-    console.log(sameCities);
-
-    // console.log(sameCities[0].name !== val && sameCities.length > 0);
-    if (val !== selectedCityName && sameCities.length > 0) {
+    if (sameCities.length > 0) {
       setCityAlreadyExist(true);
     }
     setSelectedCityName(val);

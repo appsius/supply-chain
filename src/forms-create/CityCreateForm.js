@@ -20,8 +20,6 @@ export default function CityCreateForm({
   showCityCreateForm,
   setShowCityCreateForm,
 }) {
-  const [cityAlreadyExist, setCityAlreadyExist] = useState([]);
-
   const validate = (values) => {
     const errors = {};
     if (!values.cityName && resetMode === false) {
@@ -35,6 +33,7 @@ export default function CityCreateForm({
     }
     return errors;
   };
+  const [cityAlreadyExist, setCityAlreadyExist] = useState([]);
 
   const createNewCity = (values) => {
     const [cityCountry] = countries.filter((c) => c.name === values.country);

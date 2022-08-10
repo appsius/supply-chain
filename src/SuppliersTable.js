@@ -183,9 +183,6 @@ export default function SuppliersTable({
                 supplierType,
               } = supplier;
 
-              // console.log(id, code, name, displayName, address);
-              // console.log(city, supplierType);
-
               return (
                 <StyledTableRow key={id}>
                   <StyledTableCell align='left'>{id}</StyledTableCell>
