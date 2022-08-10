@@ -136,12 +136,16 @@ export default function SupplierUpdateForm({
   };
 
   const handleCitySelected = (city) => {
+    setUpdatedSupplierCountry({});
+    setResetCountryMode(false);
     const countryOfCity = countries.filter((c) => c.id === city.countryId);
     setSelectedCountry(countryOfCity[0]);
     setSelectedCity(city);
   };
 
   const handleCountrySelected = (country) => {
+    setUpdatedSupplierCity({});
+    setResetCityMode(false);
     const citiesOfCountry = cities.filter(
       (city) => city.countryId === country.id
     );
