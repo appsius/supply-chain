@@ -71,16 +71,31 @@ body {
 
 .Menu-list-item {
   height: 5vh !important;
+  background-color: rgb(221 221 221) !important;
+  border-right: 6px solid white !important;
+  border-left: 6px solid white !important;
+  border-top: 3px solid white !important;
+  border-bottom: 3px solid white !important;
 }
 
 .Menu-list-item:hover {
+  background-color: black !important;
+  color: white !important;
+}
+
+/* .Menu-list-item:hover {
   background-color: rgb(9 149 102) !important;
+  color: white !important;
+} */
+
+.Menu-list-item-rendered {
+  background-color: black !important;
   color: white !important;
 }
 
 .css-kk1bwy-MuiButtonBase-root-MuiMenuItem-root {
   width: 10vw !important;
-  margin-top: 0.5rem !important;
+  padding: 0.25rem 0px !important;
   display: flex !important;
   justify-content: flex-start !important;
   padding-left: 20% !important;

@@ -114,7 +114,7 @@ export default function CountriesTable({
             fontFamily: 'Roboto',
           }}
         >
-          Country has a city — Don't remove it!
+          Country has cities, delete them first!
         </Alert>
       )}
       <TableContainer

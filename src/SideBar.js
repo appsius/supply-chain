@@ -31,6 +31,12 @@ export default function SideBar() {
   const [showSupplierTable, setShowSupplierTable] = useState(false);
   const [showCountryTable, setShowCountryTable] = useState(false);
   const [showCityTable, setShowCityTable] = useState(false);
+  const [selectedStyles, setSelectedStyles] = useState({
+    backgroundColor: 'red',
+  });
+  const [noSelectedStyles, setNoSelectedStyles] = useState({
+    backgroundColor: 'white',
+  });
 
   useEffect(() => {
     getData(suppliersGetURL, setSuppliers);
@@ -53,6 +59,7 @@ export default function SideBar() {
     getData(dataUrl, setData);
     hideAllForms();
     if (renderedData === 'suppliers-rendered') {
+      setNoSelectedStyles({ backgroundColor: 'red' });
       setShowSupplierTable(true);
       setRenderedData('suppliers-rendered');
     } else if (renderedData === 'countries-rendered') {
@@ -76,7 +83,11 @@ export default function SideBar() {
                 </Button>
                 <Menu {...bindMenu(popupState)} className='Menu-list'>
                   <MenuItem
-                    className='Menu-list-item'
+                    className={
+                      renderedData === 'suppliers-rendered'
+                        ? 'Menu-list-item Menu-list-item-rendered'
+                        : 'Menu-list-item'
+                    }
                     onClick={() =>
                       handleClick(
                         suppliersGetURL,
@@ -89,7 +100,11 @@ export default function SideBar() {
                     Suppliers
                   </MenuItem>
                   <MenuItem
-                    className='Menu-list-item'
+                    className={
+                      renderedData === 'countries-rendered'
+                        ? 'Menu-list-item Menu-list-item-rendered'
+                        : 'Menu-list-item'
+                    }
                     onClick={() =>
                       handleClick(
                         countriesGetURL,
@@ -102,7 +117,11 @@ export default function SideBar() {
                     Countries
                   </MenuItem>
                   <MenuItem
-                    className='Menu-list-item'
+                    className={
+                      renderedData === 'cities-rendered'
+                        ? 'Menu-list-item Menu-list-item-rendered'
+                        : 'Menu-list-item'
+                    }
                     onClick={() =>
                       handleClick(
                         citiesGetURL,
