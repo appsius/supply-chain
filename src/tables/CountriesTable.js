@@ -13,6 +13,7 @@ import CountryUpdateForm from '../forms-update/CountryUpdateForm';
 import CountryCreateForm from '../forms-create/CountryCreateForm';
 import { Alert } from '@mui/material';
 
+// table rows styles
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,
@@ -32,63 +33,72 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function CountriesTable({
+  // countries data
   cities,
   countries,
   countriesGetURL,
   setCountries,
-  setRenderedData,
-  // show|hide forms or table
+  // show/hide table or forms
   showCountryTable,
   setShowCountryTable,
   showCountryCreateForm,
   setShowCountryCreateForm,
   showCountryUpdateForm,
   setShowCountryUpdateForm,
+  setRenderedData,
 }) {
+  // country post/update/delete URLs
   const countryCreateURL =
     'http://45.130.15.52:6501/api/services/app/Country/Create';
   const countryUpdateURL =
     'http://45.130.15.52:6501/api/services/app/Country/Update';
   const countryDeleteURL =
     'http://45.130.15.52:6501/api/services/app/Country/Delete?Id=';
+  // selected country update data
   const [selectedCountry, setSelectedCountry] = useState({});
   const [selectedCountryName, setSelectedCountryName] = useState('');
-  const [resetMode, setResetMode] = useState(true);
   const [showAlert, setShowAlert] = useState(false);
   const [alertCountryName, setAlertCountryName] = useState('');
+  // validation reset controller
+  const [resetMode, setResetMode] = useState(true);
 
   function handleShowCreateForm() {
+    // set validation modes
+    // not show validation error when open create form
     setResetMode(true);
-    // hide-show table and forms
+    // hide table and show create form
     setShowCountryTable(false);
     setShowCountryUpdateForm(false);
     setShowCountryCreateForm(true);
   }
 
   function handleCountryUpdate(country) {
+    // selected country data
     setSelectedCountry(country);
     setSelectedCountryName(country.name);
     setResetMode(true);
-    // hide-show table and forms
+    // set validation modes
+    // not show validation errors when open update form
+    setResetMode(true);
+    // hide table and show update form
     setShowCountryTable(false);
     setShowCountryCreateForm(false);
     setShowCountryUpdateForm(true);
   }
 
   function handleCountryDelete(country) {
-    const { id, name } = country;
+    // Alert - do not delete country if has city
     const citiesOfCountry = cities.filter(
-      (city) => city.countryId === Number(id)
+      (city) => city.countryId === Number(country.id)
     );
     if (citiesOfCountry.length > 0) {
-      // set alert to not delete country/has city
-      setAlertCountryName(name);
+      setAlertCountryName(country.name);
       setShowAlert(true);
       setTimeout(() => {
         setShowAlert(false);
       }, 3000);
     } else {
-      deleteData(countriesGetURL, setCountries, countryDeleteURL + id);
+      deleteData(countriesGetURL, setCountries, countryDeleteURL + country.id);
       setShowCountryTable(true);
       setRenderedData('countries-rendered');
     }
@@ -175,36 +185,39 @@ export default function CountriesTable({
         </Table>
       </TableContainer>
       <CountryCreateForm
+        // countries data
         countries={countries}
         countriesGetURL={countriesGetURL}
         setCountries={setCountries}
         countryCreateURL={countryCreateURL}
+        // validation reset modes
         resetMode={resetMode}
         setResetMode={setResetMode}
-        setRenderedData={setRenderedData}
-        // show|hide country create form or table
+        // hide table, show country create form
         setShowCountryTable={setShowCountryTable}
         showCountryCreateForm={showCountryCreateForm}
         setShowCountryCreateForm={setShowCountryCreateForm}
+        setRenderedData={setRenderedData}
       />
       <CountryUpdateForm
+        // countries data
         countries={countries}
         countriesGetURL={countriesGetURL}
         setCountries={setCountries}
+        countryUpdateURL={countryUpdateURL}
         // selected country data for filling labels
         selectedCountry={selectedCountry}
         setSelectedCountry={setSelectedCountry}
         selectedCountryName={selectedCountryName}
         setSelectedCountryName={setSelectedCountryName}
-        //
-        countryUpdateURL={countryUpdateURL}
+        // validation reset modes
         resetMode={resetMode}
         setResetMode={setResetMode}
-        setRenderedData={setRenderedData}
-        // show|hide country update form or table
+        // hide table, show country update form
         setShowCountryTable={setShowCountryTable}
         showCountryUpdateForm={showCountryUpdateForm}
         setShowCountryUpdateForm={setShowCountryUpdateForm}
+        setRenderedData={setRenderedData}
       />
     </div>
   );

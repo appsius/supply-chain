@@ -12,6 +12,7 @@ import { deleteData } from '../helpers';
 import CityCreateForm from '../forms-create/CityCreateForm';
 import CityUpdateForm from '../forms-update/CityUpdateForm';
 
+// table rows styles
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,
@@ -21,7 +22,6 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     fontSize: 15,
   },
 }));
-
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
     backgroundColor: theme.palette.action.hover,
@@ -33,7 +33,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function CitiesTable({
-  // city data
+  // cities data
   cities,
   countries,
   suppliers,
@@ -41,71 +41,72 @@ export default function CitiesTable({
   setCities,
   countriesGetURL,
   setCountries,
-  setRenderedData,
-  // show | hide forms
+  // show/hide table or form
   showCityTable,
   setShowCityTable,
   showCityCreateForm,
   setShowCityCreateForm,
   showCityUpdateForm,
   setShowCityUpdateForm,
+  setRenderedData,
 }) {
+  // city post/update/delete URLs
   const cityCreateURL = 'http://45.130.15.52:6501/api/services/app/City/Create';
   const cityUpdateURL = 'http://45.130.15.52:6501/api/services/app/City/Update';
   const cityDeleteURL =
     'http://45.130.15.52:6501/api/services/app/City/Delete?Id=';
-
-  // selected city data for filling labels
+  // selected city update data
   const [selectedCity, setSelectedCity] = useState({});
   const [selectedCityName, setSelectedCityName] = useState('');
   const [selectedCityCountryName, setSelectedCityCountryName] = useState('');
-  const [cityResetMode, setCityResetMode] = useState(false);
-  const [resetMode, setResetMode] = useState(true);
   const [showAlert, setShowAlert] = useState(false);
   const [alertCityName, setAlertCityName] = useState('');
+  // validation reset controllers
+  const [cityResetMode, setCityResetMode] = useState(false);
+  const [resetMode, setResetMode] = useState(true);
 
   function openCityForm() {
+    // set validation modes
+    // not show validation errors when open create form
+    setCityResetMode(true);
     setResetMode(true);
-    // hide-show table and forms
+    // hide table and show create form
     setShowCityTable(false);
     setShowCityUpdateForm(false);
     setShowCityCreateForm(true);
   }
 
   function handleCityUpdate(city) {
-    setSelectedCity({});
-    setSelectedCityName('');
-    setSelectedCityCountryName('');
+    // selected city data
     const countryOfCity = countries.filter(
       (country) => country.id === city.countryId
     );
-    // selected city data
     setSelectedCity(city);
     setSelectedCityName(city.name);
     setSelectedCityCountryName(countryOfCity[0].name);
-    setResetMode(true);
+    // set validation modes
+    // not show validation errors when open update form
     setCityResetMode(true);
-    // hide-show table and forms
+    setResetMode(true);
+    // hide table and show update form
     setShowCityTable(false);
     setShowCityCreateForm(false);
     setShowCityUpdateForm(true);
   }
 
   function handleCityDelete(city) {
-    const { id, name } = city;
+    // Alert - do not delete city if has suppliers
     const supplierCity = suppliers.filter(
       (supplier) => supplier.city && supplier.city.name === city.name
     );
-    console.log(supplierCity);
     if (supplierCity.length > 0) {
-      // Alert - donot delete city if has suppliers
-      setAlertCityName(name);
+      setAlertCityName(city.name);
       setShowAlert(true);
       setTimeout(() => {
         setShowAlert(false);
       }, 3000);
     } else {
-      deleteData(citiesGetURL, setCities, cityDeleteURL + id);
+      deleteData(citiesGetURL, setCities, cityDeleteURL + city.id);
       setShowCityTable(true);
       setRenderedData('cities-rendered');
     }
@@ -193,6 +194,7 @@ export default function CitiesTable({
         </Table>
       </TableContainer>
       <CityCreateForm
+        // cities data
         cities={cities}
         countries={countries}
         citiesGetURL={citiesGetURL}
@@ -200,37 +202,41 @@ export default function CitiesTable({
         cityCreateURL={cityCreateURL}
         countriesGetURL={countriesGetURL}
         setCountries={setCountries}
+        // validation reset modes
+        cityResetMode={cityResetMode}
+        setCityResetMode={setCityResetMode}
         resetMode={resetMode}
         setResetMode={setResetMode}
-        setRenderedData={setRenderedData}
-        // show | hide forms
+        // hide table, show create form
         setShowCityTable={setShowCityTable}
         showCityCreateForm={showCityCreateForm}
         setShowCityCreateForm={setShowCityCreateForm}
+        setRenderedData={setRenderedData}
       />
       <CityUpdateForm
+        // cities data
         cities={cities}
         countries={countries}
         citiesGetURL={citiesGetURL}
         setCities={setCities}
-        // selected city data for filling labels
+        cityUpdateURL={cityUpdateURL}
+        // selected city update data
         selectedCity={selectedCity}
         setSelectedCity={setSelectedCity}
         selectedCityName={selectedCityName}
         setSelectedCityName={setSelectedCityName}
         selectedCityCountryName={selectedCityCountryName}
         setSelectedCityCountryName={setSelectedCityCountryName}
-        //
-        cityUpdateURL={cityUpdateURL}
-        resetMode={resetMode}
-        setResetMode={setResetMode}
+        // validation reset modes
         cityResetMode={cityResetMode}
         setCityResetMode={setCityResetMode}
-        setRenderedData={setRenderedData}
-        // show | hide forms
+        resetMode={resetMode}
+        setResetMode={setResetMode}
+        // hide table, show update form
         setShowCityTable={setShowCityTable}
         showCityUpdateForm={showCityUpdateForm}
         setShowCityUpdateForm={setShowCityUpdateForm}
+        setRenderedData={setRenderedData}
       />
     </div>
   );

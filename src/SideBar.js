@@ -3,25 +3,27 @@ import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
+import { getData } from './helpers';
 import SuppliersTable from './tables/SuppliersTable';
 import CountriesTable from './tables/CountriesTable';
 import CitiesTable from './tables/CitiesTable';
-import { getData } from './helpers';
 
 export default function SideBar() {
+  // if no data cond.
   const noDataText =
     'Click from Dashboard to see Suppliers, Countries & Cities data';
   const [loading, setLoading] = useState(false);
+  // get data URLs
   const suppliersGetURL =
     'http://45.130.15.52:6501/api/services/app/Supplier/GetAll';
   const countriesGetURL =
     'http://45.130.15.52:6501/api/services/app/Country/GetAll';
   const citiesGetURL = 'http://45.130.15.52:6501/api/services/app/City/GetAll';
+  // data to fetch
   const [suppliers, setSuppliers] = useState([]);
   const [countries, setCountries] = useState([]);
   const [cities, setCities] = useState([]);
-  const [renderedData, setRenderedData] = useState('');
-  // forms shown or not
+  // hide forms and table
   const [showSupplierCreateForm, setShowSupplierCreateForm] = useState(false);
   const [showSupplierUpdateForm, setShowSupplierUpdateForm] = useState(false);
   const [showCountryCreateForm, setShowCountryCreateForm] = useState(false);
@@ -31,12 +33,7 @@ export default function SideBar() {
   const [showSupplierTable, setShowSupplierTable] = useState(false);
   const [showCountryTable, setShowCountryTable] = useState(false);
   const [showCityTable, setShowCityTable] = useState(false);
-  const [selectedStyles, setSelectedStyles] = useState({
-    backgroundColor: 'red',
-  });
-  const [noSelectedStyles, setNoSelectedStyles] = useState({
-    backgroundColor: 'white',
-  });
+  const [renderedData, setRenderedData] = useState('');
 
   useEffect(() => {
     getData(suppliersGetURL, setSuppliers);
@@ -53,13 +50,13 @@ export default function SideBar() {
     setShowCityUpdateForm(false);
   }
 
+  // fetch data function
   function handleClick(dataUrl, setData, popupState, renderedData) {
     popupState.close();
     setLoading(true);
     getData(dataUrl, setData);
     hideAllForms();
     if (renderedData === 'suppliers-rendered') {
-      setNoSelectedStyles({ backgroundColor: 'red' });
       setShowSupplierTable(true);
       setRenderedData('suppliers-rendered');
     } else if (renderedData === 'countries-rendered') {
@@ -144,6 +141,7 @@ export default function SideBar() {
             <div>
               <div className='Tables'>
                 <SuppliersTable
+                  // suppliers data
                   suppliers={suppliers}
                   countries={countries}
                   cities={cities}
@@ -153,14 +151,14 @@ export default function SideBar() {
                   setCountries={setCountries}
                   citiesGetURL={citiesGetURL}
                   setCities={setCities}
-                  setRenderedData={setRenderedData}
-                  // show | hide forms
+                  // show/hide supplier forms and table
                   showSupplierTable={showSupplierTable}
                   setShowSupplierTable={setShowSupplierTable}
                   showSupplierCreateForm={showSupplierCreateForm}
                   setShowSupplierCreateForm={setShowSupplierCreateForm}
                   showSupplierUpdateForm={showSupplierUpdateForm}
                   setShowSupplierUpdateForm={setShowSupplierUpdateForm}
+                  setRenderedData={setRenderedData}
                 />
               </div>
             </div>
@@ -169,18 +167,19 @@ export default function SideBar() {
             <div>
               <div className='Tables'>
                 <CountriesTable
+                  // countries data
                   cities={cities}
                   countries={countries}
                   countriesGetURL={countriesGetURL}
                   setCountries={setCountries}
-                  setRenderedData={setRenderedData}
-                  // show | hide forms
+                  // show/hide country forms and table
                   showCountryTable={showCountryTable}
                   setShowCountryTable={setShowCountryTable}
                   showCountryCreateForm={showCountryCreateForm}
                   setShowCountryCreateForm={setShowCountryCreateForm}
                   showCountryUpdateForm={showCountryUpdateForm}
                   setShowCountryUpdateForm={setShowCountryUpdateForm}
+                  setRenderedData={setRenderedData}
                 />
               </div>
             </div>
@@ -189,6 +188,7 @@ export default function SideBar() {
             <div>
               <div className='Tables'>
                 <CitiesTable
+                  // cities data
                   cities={cities}
                   countries={countries}
                   suppliers={suppliers}
@@ -196,14 +196,14 @@ export default function SideBar() {
                   setCities={setCities}
                   countriesGetURL={countriesGetURL}
                   setCountries={setCountries}
-                  setRenderedData={setRenderedData}
-                  // show | hide forms
+                  // show/hide city forms and table
                   showCityTable={showCityTable}
                   setShowCityTable={setShowCityTable}
                   showCityCreateForm={showCityCreateForm}
                   setShowCityCreateForm={setShowCityCreateForm}
                   showCityUpdateForm={showCityUpdateForm}
                   setShowCityUpdateForm={setShowCityUpdateForm}
+                  setRenderedData={setRenderedData}
                 />
               </div>
             </div>

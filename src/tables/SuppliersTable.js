@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { styled } from '@mui/material/styles';
+import { Button } from '@mui/material';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
@@ -7,11 +8,11 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Button } from '@mui/material';
 import { deleteData } from '../helpers';
 import SupplierCreateForm from '../forms-create/SupplierCreateForm';
 import SupplierUpdateForm from '../forms-update/SupplierUpdateForm';
 
+// table rows styles
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: theme.palette.common.black,
@@ -21,7 +22,6 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     fontSize: 15,
   },
 }));
-
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
     backgroundColor: theme.palette.action.hover,
@@ -33,42 +33,36 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 export default function SuppliersTable({
+  // suppliers data
   suppliers,
   countries,
   cities,
   suppliersGetURL,
   setSuppliers,
-  setRenderedData,
-  // show|hide forms or table
+  // show/hide form or table
   showSupplierTable,
   setShowSupplierTable,
   showSupplierCreateForm,
   setShowSupplierCreateForm,
   showSupplierUpdateForm,
   setShowSupplierUpdateForm,
+  setRenderedData,
 }) {
-  // api URLs
+  // supplier post/update/delete URLs
   const supplierCreateURL =
     'http://45.130.15.52:6501/api/services/app/Supplier/Create';
   const supplierUpdateURL =
     'http://45.130.15.52:6501/api/services/app/Supplier/Update';
   const supplierDeleteURL =
     'http://45.130.15.52:6501/api/services/app/Supplier/Delete?Id=';
+  // fetch supplier types
+  const [supplierTypes, setSupplierTypes] = useState([]);
   useEffect(() => {
     fetch('http://45.130.15.52:6501/api/services/app/SupplierType/GetAll')
       .then((res) => res.json())
       .then(({ result }) => setSupplierTypes(result.items));
   }, []);
-  const [supplierTypes, setSupplierTypes] = useState([]);
-  // validation reset controllers
-  const [resetCodeMode, setResetCodeMode] = useState(false);
-  const [resetNameMode, setResetNameMode] = useState(false);
-  const [resetDNameMode, setResetDNameMode] = useState(false);
-  const [resetAddressMode, setResetAddressMode] = useState(false);
-  const [resetCityMode, setResetCityMode] = useState(false);
-  const [resetCountryMode, setResetCountryMode] = useState(false);
-  const [resetSTypeMode, setResetSTypeMode] = useState(false);
-  // selected city data for filling labels
+  // selected supplier update data
   const [selectedUpdateSupplier, setSelectedUpdateSupplier] = useState({});
   const [updateSupplierCode, setUpdateSupplierCode] = useState('');
   const [updatedSupplierName, setUpdatedSupplierName] = useState('');
@@ -77,9 +71,18 @@ export default function SuppliersTable({
   const [updatedSupplierCity, setUpdatedSupplierCity] = useState({});
   const [updatedSupplierCountry, setUpdatedSupplierCountry] = useState({});
   const [updatedSupplierSType, setUpdatedSupplierSType] = useState({});
+  // validation reset controllers
+  const [resetCodeMode, setResetCodeMode] = useState(false);
+  const [resetNameMode, setResetNameMode] = useState(false);
+  const [resetDNameMode, setResetDNameMode] = useState(false);
+  const [resetAddressMode, setResetAddressMode] = useState(false);
+  const [resetCityMode, setResetCityMode] = useState(false);
+  const [resetCountryMode, setResetCountryMode] = useState(false);
+  const [resetSTypeMode, setResetSTypeMode] = useState(false);
 
   const openSupplierForm = () => {
-    // validation modes
+    // set validation modes
+    // not show validation errors when open create form
     setResetCodeMode(true);
     setResetNameMode(true);
     setResetDNameMode(true);
@@ -87,13 +90,14 @@ export default function SuppliersTable({
     setResetCityMode(true);
     setResetCountryMode(true);
     setResetSTypeMode(true);
-    // hide-show table and forms
+    // hide table and show create form
     setShowSupplierTable(false);
     setShowSupplierUpdateForm(false);
     setShowSupplierCreateForm(true);
   };
 
   function handleSupplierUpdate(supplier) {
+    // get selected data - city, country, s.type
     const selectedCity = cities.filter((city) => city.id === supplier.cityId);
     const selectedCountry = countries.filter(
       (country) => country.id === supplier.city.country.id
@@ -101,8 +105,7 @@ export default function SuppliersTable({
     const selectedSType = supplierTypes.filter(
       (sType) => sType.id === supplier.supplierTypeId
     );
-
-    // selected city data for filling labels
+    // set selected supplier update data
     setSelectedUpdateSupplier(supplier);
     setUpdateSupplierCode(supplier.code);
     setUpdatedSupplierName(supplier.name);
@@ -111,7 +114,8 @@ export default function SuppliersTable({
     setUpdatedSupplierCity(selectedCity[0]);
     setUpdatedSupplierCountry(selectedCountry[0]);
     setUpdatedSupplierSType(selectedSType[0]);
-    // validation modes
+    // set validation modes
+    // not show validation errors when open update form
     setResetCodeMode(true);
     setResetNameMode(true);
     setResetDNameMode(true);
@@ -119,7 +123,7 @@ export default function SuppliersTable({
     setResetCityMode(true);
     setResetCountryMode(true);
     setResetSTypeMode(true);
-    // hide-show table and forms
+    // hide table and show update form
     setShowSupplierTable(false);
     setShowSupplierCreateForm(false);
     setShowSupplierUpdateForm(true);
@@ -226,12 +230,12 @@ export default function SuppliersTable({
         </Table>
       </TableContainer>
       <SupplierCreateForm
+        // suppliers data
         countries={countries}
         cities={cities}
         suppliersGetURL={suppliersGetURL}
         setSuppliers={setSuppliers}
         supplierCreateURL={supplierCreateURL}
-        setRenderedData={setRenderedData}
         // validation reset modes
         resetCodeMode={resetCodeMode}
         resetNameMode={resetNameMode}
@@ -247,19 +251,21 @@ export default function SuppliersTable({
         setResetCityMode={setResetCityMode}
         setResetCountryMode={setResetCountryMode}
         setResetSTypeMode={setResetSTypeMode}
-        // show|hide supplier create form or table
+        // hide table, show supplier create form
         setShowSupplierTable={setShowSupplierTable}
         showSupplierCreateForm={showSupplierCreateForm}
         setShowSupplierCreateForm={setShowSupplierCreateForm}
+        setRenderedData={setRenderedData}
       />
       <SupplierUpdateForm
+        // suppliers data
         cities={cities}
         countries={countries}
         supplierTypes={supplierTypes}
         suppliersGetURL={suppliersGetURL}
         setSuppliers={setSuppliers}
         supplierUpdateURL={supplierUpdateURL}
-        // selected supplier data for filling labels
+        // selected supplier update data
         selectedUpdateSupplier={selectedUpdateSupplier}
         setSelectedUpdateSupplier={setSelectedUpdateSupplier}
         updateSupplierCode={updateSupplierCode}
@@ -291,7 +297,7 @@ export default function SuppliersTable({
         setResetCityMode={setResetCityMode}
         setResetCountryMode={setResetCountryMode}
         setResetSTypeMode={setResetSTypeMode}
-        // show|hide supplier update form or table
+        // hide table, show supplier update form
         setShowSupplierTable={setShowSupplierTable}
         showSupplierUpdateForm={showSupplierUpdateForm}
         setShowSupplierUpdateForm={setShowSupplierUpdateForm}
