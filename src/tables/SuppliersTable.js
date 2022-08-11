@@ -8,9 +8,9 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Button } from '@mui/material';
-import SupplierCreateForm from './forms-create/SupplierCreateForm';
-import { deleteData } from './helpers';
-import SupplierUpdateForm from './forms-update/SupplierUpdateForm';
+import { deleteData } from '../helpers';
+import SupplierCreateForm from '../forms-create/SupplierCreateForm';
+import SupplierUpdateForm from '../forms-update/SupplierUpdateForm';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {

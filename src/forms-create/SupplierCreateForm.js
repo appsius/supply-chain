@@ -71,6 +71,7 @@ export default function SupplierCreateForm({
       .then(({ result }) => setSupplierTypes(result.items));
   }, []);
 
+  // main supplier insertion function
   const createNewSupplier = async (values) => {
     const { code, name, displayName, address } = values;
     const newSupplier = {
@@ -92,11 +93,14 @@ export default function SupplierCreateForm({
       selectedCountry.id &&
       selectedSupplierType.id
     ) {
+      // insert newSupplier
       const body = JSON.stringify(newSupplier);
       createData(suppliersGetURL, setSuppliers, supplierCreateURL, body);
+      // reset selected data
       setSelectedCountry({});
       setSelectedCities([]);
       setSelectedSupplierType({});
+      // show supplier table
       setShowSupplierCreateForm(false);
       setShowSupplierTable(true);
       setRenderedData('suppliers-rendered');
@@ -130,7 +134,7 @@ export default function SupplierCreateForm({
     setSelectedSupplierType(filteredSupplierType);
   };
 
-  // resetting validation for supplier after submit
+  // resetting validations conds. to show - validate()
   const handleCodeResetMode = () => {
     setResetCodeMode(false);
   };
@@ -166,6 +170,7 @@ export default function SupplierCreateForm({
   };
 
   const getCitiesMenu = () => {
+    // render only selected country's cities
     if (selectedCities.length > 0) {
       return selectedCities.map((sCity) => {
         const { id, name, countryId } = sCity;
@@ -182,6 +187,7 @@ export default function SupplierCreateForm({
         }
       });
     } else {
+      // render all cities
       return cities.map((city) => {
         const { id, name, countryId } = city;
         if (countryId) {
@@ -200,6 +206,7 @@ export default function SupplierCreateForm({
   };
 
   const getCountriesMenu = () => {
+    // render only selected city's country
     const { id, name } = selectedCountry;
     if (name) {
       return (
@@ -212,6 +219,7 @@ export default function SupplierCreateForm({
         </MenuItem>
       );
     } else {
+      // render all countries
       return countries.map((country) => {
         const { id, name } = country;
         return (
@@ -244,10 +252,10 @@ export default function SupplierCreateForm({
 
   return (
     <div
-      style={{ padding: '16px', margin: 'auto', maxWidth: 7500 }}
+      style={{ padding: '16px', margin: 'auto' }}
       className={showSupplierCreateForm ? 'show' : 'hide'}
     >
-      <div className='Supplly-create Create-form'>
+      <div className='Create-form'>
         <Form
           onSubmit={(data) => createNewSupplier(data)}
           validate={validate}
@@ -259,11 +267,11 @@ export default function SupplierCreateForm({
             >
               <Paper style={{ padding: '16px 16px 44px 16px' }}>
                 <Grid container alignItems='flex-start' spacing={8}>
-                  <Grid item xs={12}>
+                  <Grid item xs={12} className='Supplier-form-title'>
                     <h2
                       style={{
-                        marginLeft: '-61%',
-                        fontWeight: '500',
+                        marginLeft: '-55%',
+                        fontWeight: '300',
                       }}
                     >
                       Supplier Create Form

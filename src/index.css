@@ -161,23 +161,32 @@ body {
 }
 
 form {
-  margin-top: 10px;
-}
-
-form .MuiPaper-root {
-  width: 130% !important;
+  margin-top: 10px !important;
 }
 
 .Create-form {
-  padding: 20px 40px;
-  margin: 0px auto;
-  max-width: 600px;
+  padding: 0px 40px !important;
+  margin: 0px auto !important;
 }
 
 .Supplier-create-form {
-  padding: 20px 40px;
-  margin: 0px -50px;
-  max-width: 850px;
+  padding: 20px 40px !important;
+  margin: 0px -5vw !important;
+  max-width: 700px !important;
+}
+
+.Country-create-form,
+.Country-update-form,
+.City-create-form,
+.City-update-form {
+  padding: 0px 0px !important;
+  margin: 0px auto !important;
+  max-width: 600px !important;
+}
+
+.Supplier-form-title {
+  /* margin-left: '-45%' !important; */
+  padding: 32px 32px 0px 32px !important;
 }
 
 .Select-country {
@@ -189,6 +198,7 @@ form .MuiPaper-root {
   flex-direction: row;
   align-items: center;
   justify-content: center;
+  padding: 32px 32px 8px 32px !important;
 }
 
 .Form-buttons {

@@ -93,20 +93,24 @@ export default function CityCreateForm({
       style={{ padding: 16, margin: 'auto', maxWidth: 600 }}
       className={showCityCreateForm ? 'show' : 'hide'}
     >
-      <div className='City-create Create-form'>
+      <div>
         <Form
           onSubmit={(data) => createNewCity(data)}
           validate={validate}
           render={({ form, handleSubmit, submitting }) => (
-            <form onSubmit={handleSubmit} noValidate className='Create-form'>
-              <Paper style={{ padding: 16 }}>
+            <form
+              onSubmit={handleSubmit}
+              noValidate
+              className='City-create-form'
+            >
+              <Paper style={{ padding: '16px 16px 56px 16px' }}>
                 <Grid container alignItems='flex-start' spacing={8}>
                   <h2
                     style={{
                       margin: '10px auto 0 35px',
                       paddingTop: '25px',
                       paddingBottom: '10px',
-                      fontWeight: '500',
+                      fontWeight: '300',
                     }}
                   >
                     City Create Form

@@ -3,9 +3,9 @@ import Button from '@mui/material/Button';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
-import SuppliersTable from './SuppliersTable';
-import CountriesTable from './CountriesTable';
-import CitiesTable from './CitiesTable';
+import SuppliersTable from './tables/SuppliersTable';
+import CountriesTable from './tables/CountriesTable';
+import CitiesTable from './tables/CitiesTable';
 import { getData } from './helpers';
 
 export default function SideBar() {

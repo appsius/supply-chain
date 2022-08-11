@@ -294,11 +294,11 @@ export default function SupplierUpdateForm({
             >
               <Paper style={{ padding: '16px 16px 44px 16px' }}>
                 <Grid container alignItems='flex-start' spacing={8}>
-                  <Grid item xs={12}>
+                  <Grid item xs={12} className='Supplier-form-title'>
                     <h2
                       style={{
-                        marginLeft: '-61%',
-                        fontWeight: '500',
+                        marginLeft: '-55%',
+                        fontWeight: '300',
                       }}
                     >
                       Supplier Update Form

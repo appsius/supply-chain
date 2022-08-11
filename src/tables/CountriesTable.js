@@ -8,9 +8,9 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Button from '@mui/material/Button';
-import { deleteData } from './helpers';
-import CountryUpdateForm from './forms-update/CountryUpdateForm';
-import CountryCreateForm from './forms-create/CountryCreateForm';
+import { deleteData } from '../helpers';
+import CountryUpdateForm from '../forms-update/CountryUpdateForm';
+import CountryCreateForm from '../forms-create/CountryCreateForm';
 import { Alert } from '@mui/material';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({

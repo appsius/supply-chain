@@ -8,9 +8,9 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Alert, Button } from '@mui/material';
-import { deleteData } from './helpers';
-import CityCreateForm from './forms-create/CityCreateForm';
-import CityUpdateForm from './forms-update/CityUpdateForm';
+import { deleteData } from '../helpers';
+import CityCreateForm from '../forms-create/CityCreateForm';
+import CityUpdateForm from '../forms-update/CityUpdateForm';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
