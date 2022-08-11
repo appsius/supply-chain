@@ -146,7 +146,7 @@ export default function CitiesTable({
               <StyledTableCell align='left'>ID</StyledTableCell>
               <StyledTableCell align='center'>Name</StyledTableCell>
               <StyledTableCell align='center'>Country</StyledTableCell>
-              <StyledTableCell align='right'>
+              <StyledTableCell align='right' className='City-table-buttons'>
                 <Button
                   className='Button Insert-button'
                   variant='contained'
@@ -160,12 +160,10 @@ export default function CitiesTable({
           </TableHead>
           <TableBody>
             {cities.map((city) => {
-              if (!city.id) return;
-              if (!city.name) return;
-              if (!city.countryId) return;
+              if (!city.id || !city.name || !city.countryId) return false;
               return (
                 <StyledTableRow key={city.id}>
-                  <StyledTableCell>{city.id}</StyledTableCell>
+                  <StyledTableCell align='left'>{city.id}</StyledTableCell>
                   <StyledTableCell align='center'>{city.name}</StyledTableCell>
                   <StyledTableCell align='center'>
                     {city.country ? city.country.name : 'Name-Not-Found!'}

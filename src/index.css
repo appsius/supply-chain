@@ -43,6 +43,15 @@ body {
   color: black;
 }
 
+.no-data-text {
+  margin-right: 10%;
+  margin-top: 2%;
+  font-size: 18px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: rgb(255, 0, 0);
+}
+
 .Menu {
   background-color: rgb(221 221 221);
   width: 11vw;
@@ -84,11 +93,6 @@ body {
   color: white !important;
 }
 
-/* .Menu-list-item:hover {
-  background-color: rgb(9 149 102) !important;
-  color: white !important;
-} */
-
 .Menu-list-item-rendered {
   background-color: black !important;
   color: white !important;
@@ -102,23 +106,9 @@ body {
   padding-left: 20% !important;
 }
 
-.no-data-text {
-  margin-right: 10%;
-  margin-top: 2%;
-  font-size: 18px;
-  font-weight: 400;
-  letter-spacing: 1px;
-  color: rgb(255, 0, 0);
-}
-
 .Table {
   width: 89vw;
   border-radius: 0px !important;
-}
-
-.Buttons {
-  width: 17.5%;
-  display: inline-block;
 }
 
 .Button {
@@ -133,9 +123,16 @@ body {
   border-radius: 2.5px !important;
 }
 
-.Delete-button {
-  padding: 3.6px 10px !important;
-  background-color: rgb(255 0 0) !important;
+.Supplier-table-buttons {
+  width: 11.11vw !important;
+}
+
+.City-table-buttons {
+  width: 25vw !important;
+}
+
+.Country-table-buttons {
+  width: 33vw !important;
 }
 
 .Insert-button {
@@ -149,16 +146,17 @@ body {
   width: 8.9rem;
 }
 
+.Delete-button {
+  padding: 3.6px 10px !important;
+  background-color: rgb(255 0 0) !important;
+}
+
 .css-sghohy-MuiButtonBase-root-MuiButton-root {
   background-color: black !important;
 }
 
 .css-11xur9t-MuiPaper-root-MuiTableContainer-root {
   border-radius: 0 !important;
-}
-
-.css-1ixb7gp-MuiTableCell-root.MuiTableCell-body {
-  width: 5% !important;
 }
 
 form {
@@ -183,15 +181,6 @@ form {
   padding: 0px 0px !important;
   margin: 0px auto !important;
   max-width: 600px !important;
-}
-
-.Supplier-form-title {
-  /* margin-left: '-45%' !important; */
-  padding: 32px 32px 0px 32px !important;
-}
-
-.Select-country {
-  left: 460px !important;
 }
 
 .Buttons {
@@ -225,6 +214,15 @@ form {
   padding: 10px 130px !important;
 }
 
+.Supplier-form-title {
+  /* margin-left: '-45%' !important; */
+  padding: 32px 32px 0px 32px !important;
+}
+
+.Select-country {
+  left: 460px !important;
+}
+
 .show {
   display: flex;
   transition: all 0.3s ease-in-out;
@@ -233,12 +231,4 @@ form {
 .hide {
   display: none;
   transition: all 0.3s ease-in-out;
-}
-
-.show-alert {
-  display: block;
-}
-
-.hide-alert {
-  display: none;
 }

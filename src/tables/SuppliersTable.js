@@ -148,7 +148,7 @@ export default function SuppliersTable({
               <StyledTableCell align='center'>City</StyledTableCell>
               <StyledTableCell align='center'>Country</StyledTableCell>
               <StyledTableCell align='center'>Supplier Type</StyledTableCell>
-              <StyledTableCell align='right'>
+              <StyledTableCell align='right' className='Supplier-table-buttons'>
                 <Button
                   className='Button Insert-button'
                   variant='contained'
@@ -171,7 +171,7 @@ export default function SuppliersTable({
                 !supplier.city ||
                 !supplier.supplierType
               )
-                return;
+                return false;
 
               const {
                 id,

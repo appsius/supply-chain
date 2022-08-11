@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Form, Field } from 'react-final-form';
 import { TextField, Select } from 'final-form-material-ui';
 import { Paper, Grid, Button, MenuItem } from '@material-ui/core';
@@ -149,8 +149,8 @@ export default function SupplierUpdateForm({
 
   const getCitiesMenu = () => {
     if (selectedCities.length > 0) {
-      return selectedCities.map((sCity) => {
-        const { id, name, countryId } = sCity;
+      const renderedCities = selectedCities.map((sCity) => {
+        const { id, name } = sCity;
         return (
           <MenuItem
             key={id}
@@ -161,21 +161,22 @@ export default function SupplierUpdateForm({
           </MenuItem>
         );
       });
+      return renderedCities;
     } else {
-      return cities.map((city) => {
+      const renderedCities = cities.map((city) => {
         const { id, name, countryId } = city;
-        if (countryId) {
-          return (
-            <MenuItem
-              key={id}
-              value={name}
-              onClick={() => handleCitySelected(city)}
-            >
-              {name}
-            </MenuItem>
-          );
-        }
+        if (!countryId) return false;
+        return (
+          <MenuItem
+            key={id}
+            value={name}
+            onClick={() => handleCitySelected(city)}
+          >
+            {name}
+          </MenuItem>
+        );
       });
+      return renderedCities;
     }
   };
 
@@ -193,18 +194,19 @@ export default function SupplierUpdateForm({
       );
     } else {
       return countries.map((country) => {
-        if (cities.filter((c) => c.countryId === country.id).length > 0) {
-          const { id, name } = country;
-          return (
-            <MenuItem
-              key={id}
-              value={name}
-              onClick={() => handleCountrySelected(country)}
-            >
-              {name}
-            </MenuItem>
-          );
-        }
+        const countryHasCities =
+          cities.filter((c) => c.countryId === country.id).length > 0;
+        if (!countryHasCities) return false;
+        const { id, name } = country;
+        return (
+          <MenuItem
+            key={id}
+            value={name}
+            onClick={() => handleCountrySelected(country)}
+          >
+            {name}
+          </MenuItem>
+        );
       });
     }
   };

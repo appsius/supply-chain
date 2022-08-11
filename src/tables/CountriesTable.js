@@ -128,7 +128,7 @@ export default function CountriesTable({
             <TableRow>
               <StyledTableCell align='left'>ID</StyledTableCell>
               <StyledTableCell align='center'>Name</StyledTableCell>
-              <StyledTableCell align='right'>
+              <StyledTableCell align='right' className='Country-table-buttons'>
                 <Button
                   className='Button Insert-button'
                   variant='contained'
@@ -142,6 +142,7 @@ export default function CountriesTable({
           </TableHead>
           <TableBody>
             {countries.map((country) => {
+              if (!country.id || !country.name) return false;
               const { id, name } = country;
               return (
                 <StyledTableRow key={id}>

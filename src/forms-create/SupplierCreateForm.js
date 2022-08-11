@@ -170,33 +170,31 @@ export default function SupplierCreateForm({
     if (selectedCities.length > 0) {
       return selectedCities.map((sCity) => {
         const { id, name, countryId } = sCity;
-        if (countryId) {
-          return (
-            <MenuItem
-              key={id}
-              value={name}
-              onClick={() => handleCitySelected(countryId, sCity)}
-            >
-              {name}
-            </MenuItem>
-          );
-        }
+        if (!countryId) return false;
+        return (
+          <MenuItem
+            key={id}
+            value={name}
+            onClick={() => handleCitySelected(countryId, sCity)}
+          >
+            {name}
+          </MenuItem>
+        );
       });
     } else {
       // render all cities
       return cities.map((city) => {
         const { id, name, countryId } = city;
-        if (countryId) {
-          return (
-            <MenuItem
-              key={id}
-              value={name}
-              onClick={() => handleCitySelected(countryId, city)}
-            >
-              {name}
-            </MenuItem>
-          );
-        }
+        if (!countryId) return false;
+        return (
+          <MenuItem
+            key={id}
+            value={name}
+            onClick={() => handleCitySelected(countryId, city)}
+          >
+            {name}
+          </MenuItem>
+        );
       });
     }
   };
@@ -217,18 +215,19 @@ export default function SupplierCreateForm({
     } else {
       // render all countries if has city/cities
       return countries.map((country) => {
-        if (cities.filter((c) => c.countryId === country.id).length > 0) {
-          const { id, name } = country;
-          return (
-            <MenuItem
-              key={id}
-              value={name}
-              onClick={() => handleCountrySelected(id)}
-            >
-              {name}
-            </MenuItem>
-          );
-        }
+        const countryHasCities =
+          cities.filter((c) => c.countryId === country.id).length > 0;
+        if (!countryHasCities) return false;
+        const { id, name } = country;
+        return (
+          <MenuItem
+            key={id}
+            value={name}
+            onClick={() => handleCountrySelected(id)}
+          >
+            {name}
+          </MenuItem>
+        );
       });
     }
   };
