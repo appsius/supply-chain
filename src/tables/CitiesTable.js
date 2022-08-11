@@ -121,17 +121,16 @@ export default function CitiesTable({
             display: 'flex',
             alignItems: 'center',
             position: 'absolute',
-            left: '45%',
+            left: '49.5%',
             top: '-4.5vh',
             transform: 'translate(-50%, -50%)',
-            width: '80vw',
+            width: '88vw',
             height: '5.5vh',
             borderRadius: 0,
             backgroundColor: 'red',
-            color: 'white',
-            fontSize: '1.65rem',
-            fontWeight: 'bold',
-            fontFamily: 'Roboto',
+            fontSize: '1rem',
+            fontWeight: 'lighter',
+            letterSpacing: '1.25px',
           }}
         >
           {alertCityName} has suppliers, update|delete them first!
@@ -147,7 +146,7 @@ export default function CitiesTable({
               <StyledTableCell align='left'>ID</StyledTableCell>
               <StyledTableCell align='center'>Name</StyledTableCell>
               <StyledTableCell align='center'>Country</StyledTableCell>
-              <StyledTableCell align='right' className='Buttons'>
+              <StyledTableCell align='right'>
                 <Button
                   className='Button Insert-button'
                   variant='contained'
@@ -171,7 +170,7 @@ export default function CitiesTable({
                   <StyledTableCell align='center'>
                     {city.country ? city.country.name : 'Name-Not-Found!'}
                   </StyledTableCell>
-                  <StyledTableCell align='right' className='Buttons'>
+                  <StyledTableCell align='right'>
                     <Button
                       className='Button Update-button'
                       variant='contained'

@@ -64,7 +64,7 @@ export default function SuppliersTable({
   const [resetCodeMode, setResetCodeMode] = useState(false);
   const [resetNameMode, setResetNameMode] = useState(false);
   const [resetDNameMode, setResetDNameMode] = useState(false);
-  const [resetAddressMode, setResetAddresssMode] = useState(false);
+  const [resetAddressMode, setResetAddressMode] = useState(false);
   const [resetCityMode, setResetCityMode] = useState(false);
   const [resetCountryMode, setResetCountryMode] = useState(false);
   const [resetSTypeMode, setResetSTypeMode] = useState(false);
@@ -83,7 +83,7 @@ export default function SuppliersTable({
     setResetCodeMode(true);
     setResetNameMode(true);
     setResetDNameMode(true);
-    setResetAddresssMode(true);
+    setResetAddressMode(true);
     setResetCityMode(true);
     setResetCountryMode(true);
     setResetSTypeMode(true);
@@ -115,7 +115,7 @@ export default function SuppliersTable({
     setResetCodeMode(true);
     setResetNameMode(true);
     setResetDNameMode(true);
-    setResetAddresssMode(true);
+    setResetAddressMode(true);
     setResetCityMode(true);
     setResetCountryMode(true);
     setResetSTypeMode(true);
@@ -148,7 +148,7 @@ export default function SuppliersTable({
               <StyledTableCell align='center'>City</StyledTableCell>
               <StyledTableCell align='center'>Country</StyledTableCell>
               <StyledTableCell align='center'>Supplier Type</StyledTableCell>
-              <StyledTableCell align='right' className='Buttons'>
+              <StyledTableCell align='right'>
                 <Button
                   className='Button Insert-button'
                   variant='contained'
@@ -201,7 +201,7 @@ export default function SuppliersTable({
                   <StyledTableCell align='center'>
                     {supplierType.name}
                   </StyledTableCell>
-                  <StyledTableCell align='right' className='Buttons'>
+                  <StyledTableCell align='right'>
                     <Button
                       className='Button Update-button'
                       variant='contained'
@@ -243,7 +243,7 @@ export default function SuppliersTable({
         setResetCodeMode={setResetCodeMode}
         setResetNameMode={setResetNameMode}
         setResetDNameMode={setResetDNameMode}
-        setResetAddresssMode={setResetAddresssMode}
+        setResetAddressMode={setResetAddressMode}
         setResetCityMode={setResetCityMode}
         setResetCountryMode={setResetCountryMode}
         setResetSTypeMode={setResetSTypeMode}
@@ -287,7 +287,7 @@ export default function SuppliersTable({
         setResetCodeMode={setResetCodeMode}
         setResetNameMode={setResetNameMode}
         setResetDNameMode={setResetDNameMode}
-        setResetAddresssMode={setResetAddresssMode}
+        setResetAddressMode={setResetAddressMode}
         setResetCityMode={setResetCityMode}
         setResetCountryMode={setResetCountryMode}
         setResetSTypeMode={setResetSTypeMode}

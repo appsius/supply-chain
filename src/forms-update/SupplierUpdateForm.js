@@ -38,7 +38,7 @@ export default function SupplierUpdateForm({
   setResetCodeMode,
   setResetNameMode,
   setResetDNameMode,
-  setResetAddresssMode,
+  setResetAddressMode,
   setResetCityMode,
   setResetCountryMode,
   setResetSTypeMode,
@@ -63,9 +63,7 @@ export default function SupplierUpdateForm({
       errors.address = 'Address is required';
     }
     if (!values.selectedCityName && resetCityMode === false) {
-      errors.selectedCityName = countryHasNoCity
-        ? 'No city found'
-        : 'City is required';
+      errors.selectedCityName = 'City is required';
     }
     if (!values.selectedCountryName && resetCountryMode === false) {
       errors.selectedCountryName = 'Country is required';
@@ -79,7 +77,6 @@ export default function SupplierUpdateForm({
   const [selectedCity, setSelectedCity] = useState({});
   const [selectedCountry, setSelectedCountry] = useState({});
   const [selectedSupplierType, setSelectedSupplierType] = useState({});
-  const [countryHasNoCity, setCountryHasNoCity] = useState(false);
 
   const updateSupplier = async (values) => {
     const { code, name, displayName, address } = values;
@@ -131,22 +128,17 @@ export default function SupplierUpdateForm({
   };
 
   const handleCitySelected = (city) => {
-    setUpdatedSupplierCountry({});
-    setResetCountryMode(false);
     const countryOfCity = countries.filter((c) => c.id === city.countryId);
+    setUpdatedSupplierCountry({});
     setSelectedCountry(countryOfCity[0]);
     setSelectedCity(city);
   };
 
   const handleCountrySelected = (country) => {
-    setUpdatedSupplierCity({});
-    setResetCityMode(false);
     const citiesOfCountry = cities.filter(
       (city) => city.countryId === country.id
     );
-    citiesOfCountry.length > 0
-      ? setCountryHasNoCity(false)
-      : setCountryHasNoCity(true);
+    setUpdatedSupplierCity({});
     setSelectedCities(citiesOfCountry);
     setSelectedCountry(country);
   };
@@ -201,16 +193,18 @@ export default function SupplierUpdateForm({
       );
     } else {
       return countries.map((country) => {
-        const { id, name } = country;
-        return (
-          <MenuItem
-            key={id}
-            value={name}
-            onClick={() => handleCountrySelected(country)}
-          >
-            {name}
-          </MenuItem>
-        );
+        if (cities.filter((c) => c.countryId === country.id).length > 0) {
+          const { id, name } = country;
+          return (
+            <MenuItem
+              key={id}
+              value={name}
+              onClick={() => handleCountrySelected(country)}
+            >
+              {name}
+            </MenuItem>
+          );
+        }
       });
     }
   };
@@ -245,15 +239,17 @@ export default function SupplierUpdateForm({
   };
   const handleAdressResetMode = () => {
     setUpdatedSupplierAddress('');
-    setResetAddresssMode(false);
+    setResetAddressMode(false);
   };
   const handleCityResetMode = () => {
     setUpdatedSupplierCity({});
     setResetCityMode(false);
+    setResetCountryMode(false);
   };
   const handleCountryResetMode = () => {
     setUpdatedSupplierCountry({});
     setResetCountryMode(false);
+    setResetCityMode(false);
   };
   const handleSupplierTypeResetMode = () => {
     setUpdatedSupplierSType({});
@@ -368,7 +364,6 @@ export default function SupplierUpdateForm({
                           : 'Select a city'
                       }
                       onClick={() => handleCityResetMode()}
-                      disabled={countryHasNoCity}
                     >
                       {getCitiesMenu()}
                     </Field>
@@ -376,6 +371,7 @@ export default function SupplierUpdateForm({
                   <Grid item xs={6} className='Select-country'>
                     <Field
                       fullWidth
+                      defaultValue=''
                       name='selectedCountryName'
                       component={Select}
                       formControlProps={{ fullWidth: true }}

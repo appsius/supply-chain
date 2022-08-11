@@ -22,7 +22,7 @@ export default function SupplierCreateForm({
   setResetCodeMode,
   setResetNameMode,
   setResetDNameMode,
-  setResetAddresssMode,
+  setResetAddressMode,
   setResetCityMode,
   setResetCountryMode,
   setResetSTypeMode,
@@ -46,9 +46,7 @@ export default function SupplierCreateForm({
       errors.address = 'Address is required';
     }
     if (!values.selectedCityName && resetCityMode === false) {
-      errors.selectedCityName = countryHasNoCity
-        ? 'No city found'
-        : 'City is required';
+      errors.selectedCityName = 'City is required';
     }
     if (!values.selectedCountryName && resetCountryMode === false) {
       errors.selectedCountryName = 'Country is required';
@@ -63,7 +61,6 @@ export default function SupplierCreateForm({
   const [selectedCountry, setSelectedCountry] = useState({});
   const [selectedSupplierType, setSelectedSupplierType] = useState({});
   const [selectedCities, setSelectedCities] = useState([]);
-  const [countryHasNoCity, setCountryHasNoCity] = useState(false);
 
   useEffect(() => {
     fetch('http://45.130.15.52:6501/api/services/app/SupplierType/GetAll')
@@ -121,9 +118,6 @@ export default function SupplierCreateForm({
     const citiesOfCountry = cities.filter(
       (city) => city.countryId === countryID
     );
-    citiesOfCountry.length > 0
-      ? setCountryHasNoCity(false)
-      : setCountryHasNoCity(true);
     setSelectedCities(citiesOfCountry);
   };
 
@@ -134,7 +128,7 @@ export default function SupplierCreateForm({
     setSelectedSupplierType(filteredSupplierType);
   };
 
-  // resetting validations conds. to show - validate()
+  // resetting validations conds. if false --> validate()
   const handleCodeResetMode = () => {
     setResetCodeMode(false);
   };
@@ -145,13 +139,15 @@ export default function SupplierCreateForm({
     setResetDNameMode(false);
   };
   const handleAdressResetMode = () => {
-    setResetAddresssMode(false);
+    setResetAddressMode(false);
   };
   const handleCityResetMode = () => {
     setResetCityMode(false);
+    setResetCountryMode(false);
   };
   const handleCountryResetMode = () => {
     setResetCountryMode(false);
+    setResetCityMode(false);
   };
   const handleSupplierTypeResetMode = () => {
     setResetSTypeMode(false);
@@ -219,18 +215,20 @@ export default function SupplierCreateForm({
         </MenuItem>
       );
     } else {
-      // render all countries
+      // render all countries if has city/cities
       return countries.map((country) => {
-        const { id, name } = country;
-        return (
-          <MenuItem
-            key={id}
-            value={name}
-            onClick={() => handleCountrySelected(id)}
-          >
-            {name}
-          </MenuItem>
-        );
+        if (cities.filter((c) => c.countryId === country.id).length > 0) {
+          const { id, name } = country;
+          return (
+            <MenuItem
+              key={id}
+              value={name}
+              onClick={() => handleCountrySelected(id)}
+            >
+              {name}
+            </MenuItem>
+          );
+        }
       });
     }
   };
@@ -318,12 +316,9 @@ export default function SupplierCreateForm({
                       fullWidth
                       name='selectedCityName'
                       component={Select}
-                      label={
-                        countryHasNoCity ? 'No city found' : 'Select a City'
-                      }
+                      label='Select a City'
                       formControlProps={{ fullWidth: true }}
                       onClick={() => handleCityResetMode()}
-                      disabled={countryHasNoCity}
                     >
                       {getCitiesMenu()}
                     </Field>
