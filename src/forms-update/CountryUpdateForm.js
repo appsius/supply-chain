@@ -5,47 +5,52 @@ import { Paper, Grid, Button } from '@material-ui/core';
 import { updateData } from '../helpers';
 
 export default function CountryUpdateForm({
+  // country data
   countries,
   countriesGetURL,
   setCountries,
-  // selected country data for filling labels
+  countryUpdateURL,
+  // selected country update data
   selectedCountry,
   setSelectedCountry,
   selectedCountryName,
   setSelectedCountryName,
-  countryUpdateURL,
+  // reset validation mode
   resetMode,
   setResetMode,
-  setRenderedData,
   // show|hide udpdate form
   setShowCountryTable,
   showCountryUpdateForm,
   setShowCountryUpdateForm,
+  setRenderedData,
 }) {
   const validate = (values) => {
     const errors = {};
     if (!values.country && resetMode === false) {
-      errors.country = 'Required';
+      errors.country = 'Country name is required';
     }
     if (countryAlreadyExist.length > 0) {
       errors.country = 'Country already exist!';
     }
     return errors;
   };
-  const [countryAlreadyExist, setCountryAlreadyExist] = useState('');
+  const [countryAlreadyExist, setCountryAlreadyExist] = useState([]);
 
+  // main update function
   const updateCountry = async (values) => {
     values.country === '' && (values.country = selectedCountry.name);
     const updatedCountry = {
       id: selectedCountry.id,
       name: values.country,
     };
-
     if (values.country) {
+      // insert updated country
       const body = JSON.stringify(updatedCountry);
       updateData(countriesGetURL, setCountries, countryUpdateURL, body);
+      // reset selected data and conds.
       setCountryAlreadyExist([]);
       setSelectedCountry({});
+      // hide country update form - show its table
       setShowCountryUpdateForm(false);
       setShowCountryTable(true);
       setRenderedData('countries-rendered');
@@ -65,7 +70,7 @@ export default function CountryUpdateForm({
   };
 
   const handleCancelButton = () => {
-    // reset update data
+    // reset selected update data
     setCountryAlreadyExist([]);
     setSelectedCountry({});
     // show supplier table

@@ -5,38 +5,44 @@ import { Paper, Grid, Button } from '@material-ui/core';
 import { createData } from '../helpers';
 
 export default function CountryCreateForm({
+  // country data
   countries,
   countriesGetURL,
   setCountries,
   countryCreateURL,
+  // reset validation mode
   resetMode,
   setResetMode,
-  setRenderedData,
   // show|hide create form or table
   setShowCountryTable,
   showCountryCreateForm,
   setShowCountryCreateForm,
+  setRenderedData,
 }) {
   const validate = (values) => {
     const errors = {};
     if (!values.country && resetMode === false) {
-      errors.country = 'Required';
+      errors.country = 'Country name is required';
     }
     if (countryAlreadyExist.length > 0) {
-      errors.country = 'Country already exist!';
+      errors.country = 'Country already exist';
     }
     return errors;
   };
   const [countryAlreadyExist, setCountryAlreadyExist] = useState([]);
 
+  // main create function - onSubmit form
   const createNewCountry = async (values) => {
     const newCountry = {
       name: values.country,
     };
     if (values.country) {
+      // insert country data
       const body = JSON.stringify(newCountry);
-      setCountryAlreadyExist([]);
       createData(countriesGetURL, setCountries, countryCreateURL, body);
+      // reset to initial values
+      setCountryAlreadyExist([]);
+      // hide country form, show table
       setShowCountryCreateForm(false);
       setShowCountryTable(true);
       setRenderedData('countries-rendered');

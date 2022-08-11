@@ -11,14 +11,14 @@ export default function CityUpdateForm({
   setCities,
   citiesGetURL,
   cityUpdateURL,
-  // selected city data for filling labels
+  // selected city update data
   selectedCity,
   setSelectedCity,
   selectedCityName,
   setSelectedCityName,
   selectedCityCountryName,
   setSelectedCityCountryName,
-  //
+  // reset validation modes
   resetMode,
   setResetMode,
   cityResetMode,
@@ -30,21 +30,21 @@ export default function CityUpdateForm({
   setRenderedData,
 }) {
   const [cityAlreadyExist, setCityAlreadyExist] = useState(false);
-
   const validate = (values) => {
     const errors = {};
     if (!values.cityName && cityResetMode === false) {
-      errors.cityName = 'Required';
+      errors.cityName = 'City name is equired';
     }
     if (cityAlreadyExist) {
       errors.cityName = 'City already exist!';
     }
     if (!values.country && resetMode === false) {
-      errors.country = 'Required';
+      errors.country = 'Country is required';
     }
     return errors;
   };
 
+  // main update function
   const updateCity = (values) => {
     const { cityName } = values;
     const [countryOfCity] = countries.filter(
@@ -60,12 +60,14 @@ export default function CityUpdateForm({
         id,
       },
     };
-
     if (newCity.id && newCity.name && newCity.countryId) {
+      // insert updated city
       const body = JSON.stringify(newCity);
       updateData(citiesGetURL, setCities, cityUpdateURL, body);
+      // set selected data and conds.
       setCityAlreadyExist(false);
       setSelectedCity({});
+      // hide city update form - show its table
       setShowCityUpdateForm(false);
       setShowCityTable(true);
       setRenderedData('cities-rendered');
@@ -77,21 +79,20 @@ export default function CityUpdateForm({
     const sameCities = cities.filter(
       (city) => city.name.trim().toLowerCase() === val.trim().toLowerCase()
     );
-
     if (sameCities.length > 0) {
       setCityAlreadyExist(true);
     }
     setSelectedCityName(val);
   };
 
-  const handleCityClick = () => {
-    setCityResetMode(false);
-  };
-
   const handleCountryClick = (country) => {
     setSelectedCityCountryName(country.name);
   };
 
+  // reset valitions to show
+  const handleCityClick = () => {
+    setCityResetMode(false);
+  };
   const handleCountriesSelect = () => {
     setResetMode(false);
   };

@@ -10,8 +10,7 @@ import CitiesTable from './tables/CitiesTable';
 
 export default function SideBar() {
   // if no data cond.
-  const noDataText =
-    'Click from Dashboard to see Suppliers, Countries & Cities data';
+  const noDataText = 'Click dashboard to see Suppliers, Countries & Cities';
   const [loading, setLoading] = useState(false);
   // get data URLs
   const suppliersGetURL =

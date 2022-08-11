@@ -5,12 +5,12 @@ import { Paper, Grid, Button, MenuItem } from '@material-ui/core';
 import { createData } from '../helpers';
 
 export default function SupplierCreateForm({
+  // supplier data
   countries,
   cities,
   suppliersGetURL,
   setSuppliers,
   supplierCreateURL,
-  setRenderedData,
   // validation reset modes
   resetCodeMode,
   resetNameMode,
@@ -26,10 +26,11 @@ export default function SupplierCreateForm({
   setResetCityMode,
   setResetCountryMode,
   setResetSTypeMode,
-  // show|hide country create form or table
+  // show|hide form & table
   setShowSupplierTable,
   showSupplierCreateForm,
   setShowSupplierCreateForm,
+  setRenderedData,
 }) {
   const validate = (values) => {
     const errors = {};
@@ -68,7 +69,7 @@ export default function SupplierCreateForm({
       .then(({ result }) => setSupplierTypes(result.items));
   }, []);
 
-  // main supplier insertion function
+  // main supplier insertion function - onSubmit form
   const createNewSupplier = async (values) => {
     const { code, name, displayName, address } = values;
     const newSupplier = {
@@ -90,7 +91,7 @@ export default function SupplierCreateForm({
       selectedCountry.id &&
       selectedSupplierType.id
     ) {
-      // insert newSupplier
+      // insert new supplier
       const body = JSON.stringify(newSupplier);
       createData(suppliersGetURL, setSuppliers, supplierCreateURL, body);
       // reset selected data
@@ -154,12 +155,12 @@ export default function SupplierCreateForm({
   };
 
   const handleCancelButton = () => {
-    // reset update data
+    // reset selected data
     setSelectedCity({});
     setSelectedCountry({});
     setSelectedCities([]);
     setSelectedSupplierType({});
-    // show supplier table
+    // hide supplier form, show its table
     setShowSupplierCreateForm(false);
     setShowSupplierTable(true);
     setRenderedData('suppliers-rendered');

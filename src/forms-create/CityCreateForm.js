@@ -5,40 +5,42 @@ import { Paper, Grid, Button, MenuItem } from '@material-ui/core';
 import { createData } from '../helpers';
 
 export default function CityCreateForm({
+  // city data
   cities,
   countries,
   setCities,
   citiesGetURL,
   cityCreateURL,
+  // set validation modes
+  cityResetMode,
+  setCityResetMode,
   resetMode,
   setResetMode,
-  setRenderedData,
-  // showCreateForm,
-  // setShowCreateForm,
   // show|hide create form or table
   setShowCityTable,
   showCityCreateForm,
   setShowCityCreateForm,
+  setRenderedData,
 }) {
   const validate = (values) => {
     const errors = {};
-    if (!values.cityName && resetMode === false) {
-      errors.cityName = 'Required';
+    if (!values.cityName && cityResetMode === false) {
+      errors.cityName = 'City is required';
     }
     if (cityAlreadyExist.length > 0) {
-      errors.cityName = 'Cty already exist!';
+      errors.cityName = 'City already exist!';
     }
     if (!values.country && resetMode === false) {
-      errors.country = 'Required';
+      errors.country = 'Country is required';
     }
     return errors;
   };
   const [cityAlreadyExist, setCityAlreadyExist] = useState([]);
 
+  // main create function - onSubmit form
   const createNewCity = (values) => {
     const [cityCountry] = countries.filter((c) => c.name === values.country);
     const { cityName, country } = values;
-
     if (cityName && country) {
       const newCity = {
         name: cityName,
@@ -48,10 +50,12 @@ export default function CityCreateForm({
           id: cityCountry.id,
         },
       };
-
+      // insert new city
       const body = JSON.stringify(newCity);
       createData(citiesGetURL, setCities, cityCreateURL, body);
+      // reset selected data
       setCityAlreadyExist([]);
+      // hide city create form, show its table
       setShowCityCreateForm(false);
       setShowCityTable(true);
       setRenderedData('cities-rendered');
@@ -63,12 +67,15 @@ export default function CityCreateForm({
     const sameCities = cities.filter(
       (city) => city.name.trim().toLowerCase() === val.trim().toLowerCase()
     );
-    setResetMode(false);
     setCityAlreadyExist(sameCities);
   };
 
+  // reset validations to show
   const handleCountriesSelect = () => {
     setResetMode(false);
+  };
+  const handleCityClicked = () => {
+    setCityResetMode(false);
   };
 
   const handleCancelButton = () => {
@@ -125,6 +132,7 @@ export default function CityCreateForm({
                       name='cityName'
                       component={TextField}
                       label='City name'
+                      onClick={() => handleCityClicked()}
                     />
                   </Grid>
                   <Grid item xs={12} className='Select-country'>

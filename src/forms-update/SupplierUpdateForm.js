@@ -5,12 +5,14 @@ import { Paper, Grid, Button, MenuItem } from '@material-ui/core';
 import { updateData } from '../helpers';
 
 export default function SupplierUpdateForm({
+  // supplier data
   cities,
   countries,
   supplierTypes,
   suppliersGetURL,
   setSuppliers,
   supplierUpdateURL,
+  // selected supplier update data
   selectedUpdateSupplier,
   setSelectedUpdateSupplier,
   updateSupplierCode,
@@ -27,7 +29,7 @@ export default function SupplierUpdateForm({
   setUpdatedSupplierCountry,
   updatedSupplierSType,
   setUpdatedSupplierSType,
-  // validation reset modes
+  // reset validation modes
   resetCodeMode,
   resetNameMode,
   resetDNameMode,
@@ -80,7 +82,6 @@ export default function SupplierUpdateForm({
 
   const updateSupplier = async (values) => {
     const { code, name, displayName, address } = values;
-
     let updatedSupplier = {
       id: selectedUpdateSupplier.id,
       code: code ? code : selectedUpdateSupplier.code,
@@ -97,7 +98,6 @@ export default function SupplierUpdateForm({
         ? selectedSupplierType.id
         : updatedSupplierSType.id,
     };
-
     if (
       updatedSupplier.code &&
       updatedSupplier.name &&
@@ -107,19 +107,19 @@ export default function SupplierUpdateForm({
       updatedSupplier.countryId &&
       updatedSupplier.supplierTypeId
     ) {
+      // insert updated supplier
       const body = JSON.stringify(updatedSupplier);
       updateData(suppliersGetURL, setSuppliers, supplierUpdateURL, body);
-      // reset update initial data
+      // reset selected data
       setUpdatedSupplierCity({});
       setUpdatedSupplierCountry({});
       setUpdatedSupplierSType({});
       setSelectedUpdateSupplier({});
-      // reset update later data
       setSelectedCities([]);
       setSelectedCity({});
       setSelectedCountry({});
       setSelectedSupplierType({});
-      //
+      // hide supplier update form, show its table
       setShowSupplierUpdateForm(false);
       setShowSupplierTable(true);
       setRenderedData('suppliers-rendered');
@@ -259,17 +259,16 @@ export default function SupplierUpdateForm({
   };
 
   const handleCancelButton = () => {
-    // reset update initial data
+    // reset selected data
     setUpdatedSupplierCity({});
     setUpdatedSupplierCountry({});
     setUpdatedSupplierSType({});
     setSelectedUpdateSupplier({});
-    // reset update later data
     setSelectedCities([]);
     setSelectedCity({});
     setSelectedCountry({});
     setSelectedSupplierType({});
-    //
+    // hide ssupplier update form, show its table
     setShowSupplierUpdateForm(false);
     setShowSupplierTable(true);
     setRenderedData('suppliers-rendered');
